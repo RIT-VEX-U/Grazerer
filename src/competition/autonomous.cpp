@@ -17,7 +17,7 @@ void autonomous()
 {
 	vexDelay(700);
 
-	skills();
+	auto_red();
 }
 
 AutoCommand *intake_command(double amt = 12.0) {
