@@ -1,18 +1,16 @@
 #pragma once
-#include "vex.h"
-#include "core.h"
 #include "../core/include/subsystems/odometry/odometry_serial.h"
-#include "wallstake_mech.h"
-#include "autopathing/auto-red-safe.h"
 #include "autopathing/auto-blue-safe.h"
+#include "autopathing/auto-red-safe.h"
 #include "autopathing/basic-skills.h"
+#include "core.h"
+#include "vex.h"
+#include "wallstake_mech.h"
 
-
-#define WALLSTAKE_POT_OFFSET 
+#define WALLSTAKE_POT_OFFSET
 
 extern vex::brain brain;
 extern vex::controller con;
-
 
 // ================ INPUTS ================
 // Digital sensors
@@ -65,7 +63,6 @@ void conveyor_outtake(double volts);
 
 void conveyor_outtake();
 
-
 void intake_spin(double volts);
 
 extern vex::motor_group left_drive_motors;
@@ -78,8 +75,6 @@ extern vex::inertial imu;
 extern vex::distance goal_sensor;
 
 extern vex::pot wall_pot;
-
-
 
 // ================ SUBSYSTEMS ================
 extern PID drive_pid;
@@ -96,10 +91,10 @@ extern robot_specs_t robot_cfg;
 extern TankDrive drive_sys;
 
 // ================ UTILS ================
-enum MatchPaths{
-	BLUE_SAFE_AUTO,
-	RED_SAFE_AUTO,
-	BASIC_SKILLS,
+enum MatchPaths {
+    BLUE_SAFE_AUTO,
+    RED_SAFE_AUTO,
+    BASIC_SKILLS,
 };
 
 extern bool color_sort_on;
@@ -108,3 +103,18 @@ extern int color_sensor_counter;
 extern MatchPaths matchpath;
 extern bool blue_alliance();
 void robot_init();
+
+AutoCommand *intake_command(double amt = 10.0);
+AutoCommand *outtake_command(double amt = 10.0);
+
+AutoCommand *stop_intake();
+AutoCommand *conveyor_intake_command(double amt = 10.0);
+AutoCommand *conveyor_stop_command();
+
+AutoCommand *goal_grabber_command(bool value);
+
+AutoCommand *alliance_score_command(bool hold = true);
+AutoCommand *stow_command();
+AutoCommand *handoff_command();
+
+AutoCommand *wallstake_command();
