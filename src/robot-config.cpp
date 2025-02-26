@@ -138,9 +138,10 @@ pose_t auto_start_red{16.25, 88.75, 180};
 pose_t auto_start_blue{127.75, 88.75, 0};
 pose_t zero{0, 0, 0};
 
-OdometrySerial odom(true, true, skills_start, pose_t{-3.83, 0.2647, 270}, vex::PORT1, 115200);
+// OdometrySerial odom(true, true, skills_start, pose_t{-3.83, 0.2647, 270}, vex::PORT1, 115200);
 
-OdometryBase *base = &odom;
+OdometryTank odom{left_drive_motors, right_drive_motors, robot_cfg};
+// OdometryBase *base = &tankodom;
 
 TankDrive drive_sys(left_drive_motors, right_drive_motors, robot_cfg, &odom);
 
@@ -154,19 +155,19 @@ void robot_init() {
     screen::start_screen(Brain.Screen, {new screen::PIDPage(turn_pid, "turnpid")});
     // matchpath = MatchPaths::RED_SAFE_AUTO;
     //  odom.send_config(auto_start_red, pose_t{-3.83, 0.2647, 270}, false);
-    vexDelay(1000);
-    if (matchpath == MatchPaths::RED_SAFE_AUTO) {
-        printf("RED\n");
-        odom.send_config(auto_start_red, pose_t{-3.83, 0.2647, 270}, false);
-    } else if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
-        printf("BLUE\n");
-        odom.send_config(auto_start_blue, pose_t{-3.83, 0.2647, 270}, false);
-    } else if (matchpath == MatchPaths::BASIC_SKILLS) {
-        printf("SKILLS\n");
-        odom.send_config(skills_start, pose_t{-3.83, 0.2647, 270}, false);
-    } else {
-        printf("ERROR: NO PATH GIVEN\n");
-    }
+    // vexDelay(1000);
+    // if (matchpath == MatchPaths::RED_SAFE_AUTO) {
+    // printf("RED\n");
+    // odom.send_config(auto_start_red, pose_t{-3.83, 0.2647, 270}, false);
+    // } else if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
+    // printf("BLUE\n");
+    // odom.send_config(auto_start_blue, pose_t{-3.83, 0.2647, 270}, false);
+    // } else if (matchpath == MatchPaths::BASIC_SKILLS) {
+    // printf("SKILLS\n");
+    // odom.send_config(skills_start, pose_t{-3.83, 0.2647, 270}, false);
+    // } else {
+    // printf("ERROR: NO PATH GIVEN\n");
+    // }
     printf("started!\n");
     // printf("%d, %d\n", competition::bStopTasksBetweenModes, competition::bStopAllTasksBetweenModes);
     // competition::bStopTasksBetweenModes = true;
