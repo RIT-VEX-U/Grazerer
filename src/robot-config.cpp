@@ -70,10 +70,10 @@ PID::pid_config_t drive_pid_cfg{
 PID drive_pid{drive_pid_cfg};
 
 PID::pid_config_t turn_pid_cfg{
-  .p = 0.04,
-  .i = 0.0042,
-  .d = 0.004,
-  .deadband = 2,
+  .p = 0.075,//0.075
+  .i = 0.05,
+  .d = 0.005,
+  .deadband = 1,
   .on_target_time = 0.1,
   .error_method = PID::ERROR_TYPE::ANGULAR,
 
@@ -118,7 +118,7 @@ robot_specs_t robot_cfg = {
   .turn_feedback = &turn_pid,
   // .correction_pid = correction_pid_cfg,
 };
-MatchPaths matchpath = MatchPaths::BASIC_SKILLS;
+MatchPaths matchpath = MatchPaths::BLUE_SAFE_AUTO;
 
 bool blue_alliance() {
     if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
@@ -138,7 +138,7 @@ pose_t auto_start_red{16.25, 88.75, 180};
 pose_t auto_start_blue{127.75, 88.75, 0};
 pose_t zero{0, 0, 0};
 
-OdometrySerial odom(true, true, skills_start, pose_t{-3.83, 0.2647, 270}, vex::PORT1, 115200);
+OdometrySerial odom(true, true, auto_start_blue, pose_t{-3.83, 0.2647, 270}, vex::PORT1, 115200);
 
 OdometryBase *base = &odom;
 
@@ -166,6 +166,7 @@ void robot_init() {
         odom.send_config(skills_start, pose_t{-3.83, 0.2647, 270}, false);
     } else {
         printf("ERROR: NO PATH GIVEN\n");
+        odom.send_config(skills_start, pose_t{-3.83, 0.2647, 270}, false);
     }
     printf("started!\n");
     // printf("%d, %d\n", competition::bStopTasksBetweenModes, competition::bStopAllTasksBetweenModes);

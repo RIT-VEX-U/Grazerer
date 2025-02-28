@@ -261,6 +261,12 @@ public:
    */
   bool pure_pursuit(PurePursuit::Path path, directionType dir, double max_speed = 1, double end_speed = 0);
 
+  robot_specs_t
+      *config; ///< configuration holding physical dimensions of the robot. see robot_specs_t for more information
+
+      OdometryBase *odometry; ///< odometry system to track position and rotation.
+                          ///< necessary for autonomous driving
+
 private:
   motor_group &left_motors;  ///< left drive motors
   motor_group &right_motors; ///< right drive motors
@@ -269,12 +275,6 @@ private:
                                            ///< as possible
   Feedback *drive_default_feedback = NULL; ///< feedback to use to drive if none is specified
   Feedback *turn_default_feedback = NULL;  ///< feedback to use to turn if none is specified
-
-  OdometryBase *odometry; ///< odometry system to track position and rotation.
-                          ///< necessary for autonomous driving
-
-  robot_specs_t
-      &config; ///< configuration holding physical dimensions of the robot. see robot_specs_t for more information
 
   bool func_initialized = false; ///< used to control initialization of autonomous driving. (you only wan't to set the
                                  ///< target once, not every iteration that you're driving)

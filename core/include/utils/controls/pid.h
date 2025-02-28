@@ -55,7 +55,7 @@ public:
    * Create the PID object
    * @param config the configuration data for this controller
    */
-  PID(pid_config_t &config);
+  PID(pid_config_t &pid_config);
 
   /**
    * Inherited from Feedback for interoperability.
@@ -144,7 +144,7 @@ public:
    */
   void set_target(double target);
 
-  pid_config_t &config; ///< configuration struct for this controller. see pid_config_t
+  pid_config_t &pid_config; ///< configuration struct for this controller. see pid_config_t
                         ///< for information about what this contains
 
 private:

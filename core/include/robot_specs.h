@@ -20,8 +20,9 @@ typedef struct {
                                   ///< than this value, we can continue driving forward to minimize our distance but
                                   ///< will not try to spin around to point directly at the target
 
-  Feedback *drive_feedback;         ///< the default feedback for autonomous driving
-  Feedback *turn_feedback;          ///< the defualt feedback for autonomous turning
+  PID *drive_feedback;         ///< the default feedback for autonomous driving
+  PID *turn_feedback;          ///< the defualt feedback for autonomous turning
+
   PID::pid_config_t correction_pid; ///< the pid controller to keep the robot driving in as straight a line as possible
 
 } robot_specs_t;

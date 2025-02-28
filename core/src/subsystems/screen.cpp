@@ -392,7 +392,7 @@ void ButtonWidget::draw(vex::brain::lcd &scr, bool first_draw [[maybe_unused]],
 }
 
 PIDPage::PIDPage(PID &pid, std::string name, std::function<void(void)> onchange)
-    : cfg(pid.config), pid(pid), name(name), onchange(onchange),
+    : cfg(pid.pid_config), pid(pid), name(name), onchange(onchange),
       p_slider(cfg.p, 0.0, 0.5, Rect{{60, 20}, {210, 60}}, "P"),
       i_slider(cfg.i, 0.0, 0.05, Rect{{60, 80}, {180, 120}}, "I"),
       d_slider(cfg.d, 0.0, 0.05, Rect{{60, 140}, {180, 180}}, "D"),

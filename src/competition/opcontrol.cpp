@@ -2,6 +2,7 @@
 #include "competition/autonomous.h"
 #include "robot-config.h"
 #include "vex.h"
+#include "../core/include/utils/controls/pid_tuning_modes.h"
 
 void testing();
 
@@ -10,11 +11,12 @@ void auto__();
 /**
  * Main entrypoint for the driver control period
  */
+
 void opcontrol() {
     // vexDelay(1000);
     // autonomous();
     // return;
-    // testing();
+    testing();
     wallstakemech_sys.hold = false;
     // intake_sys.conveyor_stop();
     intake_sys.setLight(false);
@@ -64,14 +66,15 @@ void opcontrol() {
             intake_sys.intake_stop();
             intake_sys.conveyor_stop();
         }
-        OdometryBase *odombase = &odom;
-        pose_t pos = odombase->get_position();
-        printf("ODO X: %.2f, Y: %.2f, R:%.2f, Concurr: %f\n", pos.x, pos.y, pos.rot, conveyor.current());
-
+        // if(turnBool){
+        //     OdometryBase *odombase = &odom;
+        //     pose_t pos = odombase->get_position();
+        //     printf("ODO X: %.2f, Y: %.2f, R:%.2f, PID Error: %f\n", pos.x, pos.y, pos.rot, turn_pid.get_error());
+        // }
         double left = (double)con.Axis3.position() / 100;
         double right = (double)con.Axis2.position() / 100;
 
-        drive_sys.drive_tank(left, right, 1, TankDrive::BrakeType::None);
+        // drive_sys.drive_tank(left, right, 1, TankDrive::BrakeType::None);
 
         vexDelay(20);
     }
@@ -79,46 +82,39 @@ void opcontrol() {
     // ================ PERIODIC ================
 }
 
+// vex::task printOdomTask = vex::task(printOdom);
+
 void testing() {
-
-    class DebugCommand : public AutoCommand {
-      public:
-        bool run() override {
-            drive_sys.stop();
-            pose_t pos = odom.get_position();
-            // printf("ODO X: %.2f, Y: %.2f, R:%.2f\n", pos.x, pos.y, pos.rot);
-            // printf("ODO X: %.2f, Y: %.2f, R:%.2f\n", pos.x, pos.y, pos.rot);
-            while (true) {
-                // double left = (double)con.Axis3.position() / 100;
-                // double right = (double)con.Axis2.position() / 100;
-
-                // drive_sys.drive_tank(left, right, 1, TankDrive::BrakeType::None);
-
-                vexDelay(100);
-            }
-            return true;
-        }
-    };
-
-    con.ButtonX.pressed([]() {
-        printf("running test");
+    con.ButtonUp.pressed([](){
+        
         CommandController cc{
-          new Async(new FunctionCommand([]() {
-              while (true) {
-                  printf(
-                    "ODO X: %f ODO Y: %f, ODO ROT: %f TURNPID ERROR: %f\n", odom.get_position().x,
-                    odom.get_position().y, odom.get_position().rot, turn_pid.get_error()
-                  );
-                  vexDelay(100);
-              }
-              return true;
-          })),
-          drive_sys.TurnDegreesCmd(15, 1),
-          // drive_sys.TurnDegreesCmd(30, 1)->withTimeout(3),
-          // drive_sys.TurnDegreesCmd(45, 1)->withTimeout(3),
-          // drive_sys.TurnDegreesCmd(90, 1)->withTimeout(3),
-          // drive_sys.TurnDegreesCmd(180, 1)->withTimeout(3),
+            (new Async((new FunctionCommand([]() {
+                while(true) {
+                    OdometryBase *odombase = &odom;
+                    pose_t pos = odombase->get_position();
+                    printf("\nODO X: %.2f, Y: %.2f, R:%.2f\n", pos.x, pos.y, pos.rot);
+                    printf("PID ERROR: %.4f, PID OUT: %.4f\n", turn_pid.get_error(), turn_pid.get());
+                    printf("P: %f, I: %f, D:%f", turn_pid_cfg.p, turn_pid_cfg.i, turn_pid_cfg.d);
+                    vexDelay(20);
+                }
+                return true;
+            })))),
+            drive_sys.TurnToHeadingCmd(180, 1),
+            drive_sys.TurnToHeadingCmd(0, 1),
+            drive_sys.TurnToHeadingCmd(90, 1),
+            drive_sys.TurnToHeadingCmd(-90, 1),
+            drive_sys.TurnToHeadingCmd(45, 1),
+            drive_sys.TurnToHeadingCmd(0, 1),
         };
         cc.run();
+    });
+
+    con.ButtonX.pressed([]() {
+        PIDTuner::pid_tuner_cfg tuner_cfg = {
+            .drivesys = drive_sys,
+            .pid_type = PIDTuner::TURNPID,
+        };
+        PIDTuner turnTuner(tuner_cfg);
+        
     });
 }

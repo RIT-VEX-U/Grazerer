@@ -77,6 +77,7 @@ extern MotionController::m_profile_cfg_t drive_motioncontroller_cfg;
 extern MotionController drive_motioncontroller;
 
 extern PID::pid_config_t correction_pid_cfg;
+extern PID::pid_config_t turn_pid_cfg;
 extern OdometrySerial odom;
 extern OdometryTank tankodom;
 

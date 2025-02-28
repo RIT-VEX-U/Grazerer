@@ -6,7 +6,7 @@
 
 TankDrive::TankDrive(motor_group &left_motors, motor_group &right_motors, robot_specs_t &config, OdometryBase *odom)
     : left_motors(left_motors), right_motors(right_motors), correction_pid(config.correction_pid), odometry(odom),
-      config(config) {
+      config(&config) {
   drive_default_feedback = config.drive_feedback;
   turn_default_feedback = config.turn_feedback;
 }
@@ -413,7 +413,7 @@ bool TankDrive::drive_to_point(double x, double y, vex::directionType dir, Feedb
     sign = -1;
   }
 
-  if (fabs(dist_left) < config.drive_correction_cutoff) {
+  if (fabs(dist_left) < config->drive_correction_cutoff) {
     // When inside the robot's cutoff radius, report the distance to the point along the robot's forward axis,
     // so we always "reach" the point without having to do a lateral translation
     dist_left *= fabs(cos(angle * PI / 180.0));
@@ -437,7 +437,7 @@ bool TankDrive::drive_to_point(double x, double y, vex::directionType dir, Feedb
 
   // Disable correction when we're close enough to the point
   double correction = 0;
-  if (is_pure_pursuit || fabs(dist_left) > config.drive_correction_cutoff) {
+  if (is_pure_pursuit || fabs(dist_left) > config->drive_correction_cutoff) {
     correction = correction_pid.get();
   }
 
@@ -624,7 +624,7 @@ bool TankDrive::pure_pursuit(PurePursuit::Path path, directionType dir, Feedback
   }
 
   // Correct the robot's heading until the last cut-off
-  if (!(is_last_point && robot_pose.get_point().dist(last_point) < config.drive_correction_cutoff)) {
+  if (!(is_last_point && robot_pose.get_point().dist(last_point) < config->drive_correction_cutoff)) {
     correction_pid.update(angle_diff);
     correction = correction_pid.get();
   } else // Inside cut-off radius, ignore horizontal diffs
@@ -670,5 +670,5 @@ bool TankDrive::pure_pursuit(PurePursuit::Path path, directionType dir, Feedback
  * @return True when the path is complete
  */
 bool TankDrive::pure_pursuit(PurePursuit::Path path, directionType dir, double max_speed, double end_speed) {
-  return pure_pursuit(path, dir, *config.drive_feedback, max_speed, end_speed);
+  return pure_pursuit(path, dir, *config->drive_feedback, max_speed, end_speed);
 }
