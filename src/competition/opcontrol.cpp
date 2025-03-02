@@ -1,8 +1,8 @@
 #include "competition/opcontrol.h"
+#include "../core/include/device/cobs_device.h"
 #include "competition/autonomous.h"
 #include "robot-config.h"
 #include "vex.h"
-
 void testing();
 
 void auto__();
@@ -10,7 +10,33 @@ void auto__();
 /**
  * Main entrypoint for the driver control period
  */
+COBSSerialDevice dev{vex::PORT13, 115200};
+COBSSerialDevice dev2{vex::PORT14, 115200};
 void opcontrol() {
+
+    vex::task rec_task{[]() -> int {
+        printf("receiveing\n");
+        uint8_t buf[5000];
+        int num_recd = dev2.receive_cobs_packet_blocking(buf, 5000);
+        printf("received %d\n", num_recd);
+        COBSSerialDevice::hexdump(buf, num_recd);
+        vexDelay(2000);
+        int num_recd2 = dev2.receive_cobs_packet_blocking(buf, 5000);
+        printf("received %d\n", num_recd2);
+        COBSSerialDevice::hexdump(buf, num_recd);
+        return 0;
+    }};
+    uint8_t packet[500] = {3};
+    vexDelay(500);
+    printf("Writing\n");
+    int32_t sent = dev.send_cobs_packet_blocking(packet, sizeof(packet), true);
+    printf("Sent: %d\n", sent);
+    vexDelay(2000);
+    int32_t sent2 = dev.send_cobs_packet_blocking(packet, sizeof(packet), true);
+    printf("Sent: %d\n", sent2);
+
+    vexDelay(3000);
+    return;
     // vexDelay(1000);
     // autonomous();
     // return;

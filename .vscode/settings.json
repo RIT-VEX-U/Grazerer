@@ -1,10 +1,50 @@
 {
 	"C_Cpp.default.systemIncludePath": [
-		"${config:vexrobotics.vexcode.Cpp.Sdk.Home}\\V5\\V5_20240802_15_00_00\\vexv5\\gcc\\include\\sys"
+		"${config:vexrobotics.vexcode.Cpp.Sdk.Home}/V5/V5_20240802_15_00_00/vexv5/gcc/include/sys"
 	],
 	"cmake.sourceDirectory": "C:/Users/jack/Documents/vscode/Grazerer/vendor/eigen/bench/btl",
 	"files.associations": {
 		"new": "cpp",
-		"system_error": "cpp"
+		"system_error": "cpp",
+		"algorithm": "cpp",
+		"array": "cpp",
+		"atomic": "cpp",
+		"*.tcc": "cpp",
+		"cctype": "cpp",
+		"chrono": "cpp",
+		"clocale": "cpp",
+		"cmath": "cpp",
+		"complex": "cpp",
+		"cstdarg": "cpp",
+		"cstddef": "cpp",
+		"cstdint": "cpp",
+		"cstdio": "cpp",
+		"cstdlib": "cpp",
+		"cstring": "cpp",
+		"ctime": "cpp",
+		"cwchar": "cpp",
+		"cwctype": "cpp",
+		"deque": "cpp",
+		"unordered_map": "cpp",
+		"vector": "cpp",
+		"exception": "cpp",
+		"fstream": "cpp",
+		"functional": "cpp",
+		"initializer_list": "cpp",
+		"iosfwd": "cpp",
+		"iostream": "cpp",
+		"istream": "cpp",
+		"limits": "cpp",
+		"ostream": "cpp",
+		"numeric": "cpp",
+		"ratio": "cpp",
+		"sstream": "cpp",
+		"stdexcept": "cpp",
+		"streambuf": "cpp",
+		"thread": "cpp",
+		"tuple": "cpp",
+		"type_traits": "cpp",
+		"utility": "cpp",
+		"typeinfo": "cpp"
 	}
 }

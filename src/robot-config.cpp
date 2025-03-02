@@ -158,19 +158,19 @@ void robot_init() {
     // matchpath = MatchPaths::RED_SAFE_AUTO;
     //  odom.send_config(auto_start_red, pose_t{-3.83, 0.2647, 270}, false);
     vexDelay(1000);
-    if (matchpath == MatchPaths::RED_SAFE_AUTO) {
-        printf("RED\n");
-        odom.send_config(auto_start_red, pose_t{-3.83, 0.2647, 270}, false);
-    } else if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
-        printf("BLUE\n");
-        odom.send_config(auto_start_blue, pose_t{-3.83, 0.2647, 270}, false);
-    } else if (matchpath == MatchPaths::BASIC_SKILLS) {
-        printf("SKILLS\n");
-        odom.send_config(skills_start, pose_t{-3.83, 0.2647, 270}, false);
-    } else {
-        printf("ERROR: NO PATH GIVEN\n");
-    }
-    printf("started!\n");
+    // if (matchpath == MatchPaths::RED_SAFE_AUTO) {
+    // printf("RED\n");
+    // odom.send_config(auto_start_red, pose_t{-3.83, 0.2647, 270}, false);
+    // } else if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
+    // printf("BLUE\n");
+    // odom.send_config(auto_start_blue, pose_t{-3.83, 0.2647, 270}, false);
+    // } else if (matchpath == MatchPaths::BASIC_SKILLS) {
+    // printf("SKILLS\n");
+    // odom.send_config(skills_start, pose_t{-3.83, 0.2647, 270}, false);
+    // } else {
+    // printf("ERROR: NO PATH GIVEN\n");
+    // }
+    // printf("started!\n");
     // printf("%d, %d\n", competition::bStopTasksBetweenModes, competition::bStopAllTasksBetweenModes);
     // competition::bStopTasksBetweenModes = true;
     // competition::bStopAllTasksBetweenModes = true;
