@@ -2,7 +2,6 @@
 #include "competition/autonomous.h"
 #include "robot-config.h"
 #include "vex.h"
-#include "../core/include/utils/controls/pid_tuning_modes.h"
 
 void testing();
 
@@ -13,6 +12,7 @@ void auto__();
  */
 
 void opcontrol() {
+    
     // vexDelay(1000);
     // autonomous();
     // return;
@@ -85,36 +85,14 @@ void opcontrol() {
 // vex::task printOdomTask = vex::task(printOdom);
 
 void testing() {
+
     con.ButtonUp.pressed([](){
-        
-        CommandController cc{
-            (new Async((new FunctionCommand([]() {
-                while(true) {
-                    OdometryBase *odombase = &odom;
-                    pose_t pos = odombase->get_position();
-                    printf("\nODO X: %.2f, Y: %.2f, R:%.2f\n", pos.x, pos.y, pos.rot);
-                    printf("PID ERROR: %.4f, PID OUT: %.4f\n", turn_pid.get_error(), turn_pid.get());
-                    printf("P: %f, I: %f, D:%f", turn_pid_cfg.p, turn_pid_cfg.i, turn_pid_cfg.d);
-                    vexDelay(20);
-                }
-                return true;
-            })))),
-            drive_sys.TurnToHeadingCmd(180, 1),
-            drive_sys.TurnToHeadingCmd(0, 1),
-            drive_sys.TurnToHeadingCmd(90, 1),
-            drive_sys.TurnToHeadingCmd(-90, 1),
-            drive_sys.TurnToHeadingCmd(45, 1),
-            drive_sys.TurnToHeadingCmd(0, 1),
-        };
-        cc.run();
+        turnTuner.startTuning();
+        printf("%f\n",turnTuner.getTurnBool());
     });
 
     con.ButtonX.pressed([]() {
-        PIDTuner::pid_tuner_cfg tuner_cfg = {
-            .drivesys = drive_sys,
-            .pid_type = PIDTuner::TURNPID,
-        };
-        PIDTuner turnTuner(tuner_cfg);
-        
+        turnTuner.stopTuning();
+        printf("%f\n",turnTuner.getTurnBool());
     });
 }

@@ -11,7 +11,7 @@ PIDTuner::PIDTuner(pid_tuner_cfg in_tuner_cfg) : tuner_cfg(in_tuner_cfg){
         pid_cfg = drive_sys.config->turn_feedback->pid_config;
         pid = drive_sys.config->turn_feedback;
     }
-    task = vex::task(thread_fn, this); 
+    task = vex::task(tuner_fn, this); 
 }
 
 void PIDTuner::print_pid_data(){
@@ -32,20 +32,13 @@ void PIDTuner::inputPID(){
     std::cin >> setpoint;
 }
 
-void PIDTuner::stopTuning(){
-    turnBool = false;
-    printBool = false;
-}
-
-int PIDTuner::thread_fn(void *ptr){
+int PIDTuner::tuner_fn(void *ptr){
     PIDTuner &self = *(PIDTuner *)ptr;
-    self.printBool = false;
-    self.inputPID();
-    self.turnBool = true;
-    self.printBool = true;
-    while(self.turnBool){
-        self.drive_sys.turn_to_heading(self.setpoint, 1);
-        if(self.printBool){
+    while(true){
+        if(self.turnBool == true){
+            self.drive_sys.turn_to_heading(self.setpoint, 1);
+        }
+        if(self.printBool == true){
             self.print_pid_data();
         }
 

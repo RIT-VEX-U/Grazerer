@@ -16,10 +16,36 @@ class PIDTuner{
     PIDTuner(pid_tuner_cfg in_tuner_cfg);
     void print_pid_data();
     void inputPID();
-    void stopTuning();
-    static int thread_fn(void *ptr);
+    static int tuner_fn(void *ptr);
     pid_tuner_cfg tuner_cfg;
+    bool getPrintBool(){
+        return printBool;
+    }
+    bool setprintBool(bool newPrintBool){
+        printBool = newPrintBool;
+    }
+
+    void stopTuning(){
+        turnBool = false;
+        printBool = false;
+    }
+    void startTuning(){
+        turnBool = false;
+        printBool = false;
+        inputPID();
+        turnBool = true;
+        printBool = true;
+    }
+
+    bool getTurnBool(){
+        return turnBool;
+    }
+    bool setTurnBool(bool newTurnBool){
+        turnBool = newTurnBool;
+    }
     private:
+    bool printBool = false;
+    bool turnBool = false;
     PIDType type;
     TankDrive drive_sys = tuner_cfg.drivesys;
     PID::pid_config_t pid_cfg;
@@ -28,8 +54,6 @@ class PIDTuner{
     vex::task task;
     OdometryBase *odom;
     pose_t pos;
-
-    bool printBool = false;
-    bool turnBool = false;
+    
     double setpoint;
 };

@@ -144,6 +144,12 @@ OdometryBase *base = &odom;
 
 TankDrive drive_sys(left_drive_motors, right_drive_motors, robot_cfg, &odom);
 
+PIDTuner::pid_tuner_cfg tuner_cfg = {
+  .drivesys = drive_sys,
+  .pid_type = PIDTuner::TURNPID,
+};
+PIDTuner turnTuner(tuner_cfg);
+
 // ================ UTILS ================
 
 /**

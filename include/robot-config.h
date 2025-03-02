@@ -3,7 +3,7 @@
 #include "core.h"
 #include "../core/include/subsystems/odometry/odometry_serial.h"
 #include "TempSubSystems/TempSubSystems.h"
-
+#include "../core/include/utils/controls/pid_tuning_modes.h"
 
 #define WALLSTAKE_POT_OFFSET 
 
@@ -83,6 +83,8 @@ extern OdometryTank tankodom;
 
 extern robot_specs_t robot_cfg;
 extern TankDrive drive_sys;
+
+extern PIDTuner turnTuner;
 
 // ================ UTILS ================
 enum MatchPaths{
