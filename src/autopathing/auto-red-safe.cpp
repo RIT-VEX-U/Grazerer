@@ -8,8 +8,8 @@ void auto_red_safe() {
 		(new Async((new FunctionCommand([]() {
 			while(true) {
 				OdometryBase *odombase = &odom;
-                pose_t pos = odombase->get_position();
-            	printf("ODO X: %.2f, Y: %.2f, R:%.2f, Concurr: %f\n", pos.x, pos.y, pos.rot, conveyor.current());
+                Pose2d pos = odombase->get_position();
+            	printf("ODO X: %.2f, Y: %.2f, R:%.2f, Concurr: %f\n", pos.x(), pos.y(), pos.rotation().degrees(), conveyor.current());
 				vexDelay(100);
 			}
 			return true;

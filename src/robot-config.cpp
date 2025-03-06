@@ -132,13 +132,13 @@ bool blue_alliance() {
 ClamperSys clamper_sys{};
 IntakeSys intake_sys{};
 
-pose_t skills_start{18.5, 96, 0};
-pose_t test{24, 96, 0};
-pose_t auto_start_red{16.25, 88.75, 180};
-pose_t auto_start_blue{127.75, 88.75, 0};
-pose_t zero{0, 0, 0};
-
-OdometrySerial odom(true, true, skills_start, pose_t{-3.83, 0.2647, 270}, vex::PORT1, 115200);
+Pose2d skills_start(18.5, 96, deg2rad(0));
+Pose2d test(24, 96, deg2rad(0));
+Pose2d auto_start_red(16.25, 88.75, deg2rad(180));
+Pose2d auto_start_blue(127.75, 88.75, deg2rad(0));
+Pose2d zero(0, 0, deg2rad(0));
+Pose2d OpticalSensorLoc(-3.83, 0.2647, deg2rad(270));
+OdometrySerial odom(true, true, skills_start, OpticalSensorLoc, vex::PORT1, 115200);
 
 OdometryBase *base = &odom;
 
@@ -157,13 +157,13 @@ void robot_init() {
     vexDelay(1000);
     if (matchpath == MatchPaths::RED_SAFE_AUTO) {
         printf("RED\n");
-        odom.send_config(auto_start_red, pose_t{-3.83, 0.2647, 270}, false);
+        odom.send_config(auto_start_red, OpticalSensorLoc, false);
     } else if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
         printf("BLUE\n");
-        odom.send_config(auto_start_blue, pose_t{-3.83, 0.2647, 270}, false);
+        odom.send_config(auto_start_blue, OpticalSensorLoc, false);
     } else if (matchpath == MatchPaths::BASIC_SKILLS) {
         printf("SKILLS\n");
-        odom.send_config(skills_start, pose_t{-3.83, 0.2647, 270}, false);
+        odom.send_config(skills_start, OpticalSensorLoc, false);
     } else {
         printf("ERROR: NO PATH GIVEN\n");
     }

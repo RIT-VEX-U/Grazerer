@@ -87,9 +87,9 @@ void opcontrol() {
         }
         konamiCode();
 
-        // OdometryBase *odombase = &odom;
-        // pose_t pos = odombase->get_position();
-        // printf("ODO X: %.2f, Y: %.2f, R:%.2f, Concurr: %f\n", pos.x, pos.y, pos.rot, conveyor.current());
+        OdometryBase *odombase = &odom;
+        Pose2d pos = odombase->get_position();
+        printf("ODO X: %.2f, Y: %.2f, R:%.2f\n", pos.x(), pos.y(), pos.rotation().degrees());
 
         double left = (double)con.Axis3.position() / 100;
         double right = (double)con.Axis2.position() / 100;
@@ -230,7 +230,7 @@ void testing() {
       public:
         bool run() override {
             drive_sys.stop();
-            pose_t pos = odom.get_position();
+            Pose2d pos = odom.get_position();
             // printf("ODO X: %.2f, Y: %.2f, R:%.2f\n", pos.x, pos.y, pos.rot);
             // printf("ODO X: %.2f, Y: %.2f, R:%.2f\n", pos.x, pos.y, pos.rot);
             while (true) {
@@ -252,8 +252,8 @@ void testing() {
             new Async(new FunctionCommand([]() {
                 while (true) {
                     printf(
-                        "ODO X: %f ODO Y: %f, ODO ROT: %f TURNPID ERROR: %f\n", odom.get_position().x,
-                        odom.get_position().y, odom.get_position().rot, turn_pid.get_error()
+                        "ODO X: %f ODO Y: %f, ODO ROT: %f TURNPID ERROR: %f\n", odom.get_position().x(),
+                        odom.get_position().y(), odom.get_position().rotation().degrees(), turn_pid.get_error()
                     );
                     vexDelay(100);
                 }
