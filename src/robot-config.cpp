@@ -163,7 +163,7 @@ void robot_init() {
         odom.send_config(auto_start_blue, OpticalSensorLoc, false);
     } else if (matchpath == MatchPaths::BASIC_SKILLS) {
         printf("SKILLS\n");
-        odom.send_config(skills_start, OpticalSensorLoc, false);
+        odom.send_config(zero, OpticalSensorLoc, false);
     } else {
         printf("ERROR: NO PATH GIVEN\n");
     }

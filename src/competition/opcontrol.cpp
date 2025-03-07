@@ -259,7 +259,7 @@ void testing() {
                 }
                 return true;
             })),
-            drive_sys.TurnDegreesCmd(90, 1),
+            drive_sys.PurePursuitCmd(PurePursuit::Path(Translation2d()),
             // drive_sys.TurnDegreesCmd(30, 1)->withTimeout(3),
             // drive_sys.TurnDegreesCmd(45, 1)->withTimeout(3),
             // drive_sys.TurnDegreesCmd(90, 1)->withTimeout(3),
