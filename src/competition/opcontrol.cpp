@@ -87,9 +87,9 @@ void opcontrol() {
         }
         konamiCode();
 
-        OdometryBase *odombase = &odom;
-        Pose2d pos = odombase->get_position();
-        printf("ODO X: %.2f, Y: %.2f, R:%.2f\n", pos.x(), pos.y(), pos.rotation().degrees());
+        // OdometryBase *odombase = &odom;
+        // Pose2d pos = odombase->get_position();
+        // printf("ODO X: %.2f, Y: %.2f, R:%.2f\n", pos.x(), pos.y(), pos.rotation().degrees());
 
         double left = (double)con.Axis3.position() / 100;
         double right = (double)con.Axis2.position() / 100;
@@ -259,7 +259,7 @@ void testing() {
                 }
                 return true;
             })),
-            drive_sys.PurePursuitCmd(PurePursuit::Path(Translation2d()),
+            drive_sys.DriveForwardCmd(24),
             // drive_sys.TurnDegreesCmd(30, 1)->withTimeout(3),
             // drive_sys.TurnDegreesCmd(45, 1)->withTimeout(3),
             // drive_sys.TurnDegreesCmd(90, 1)->withTimeout(3),
