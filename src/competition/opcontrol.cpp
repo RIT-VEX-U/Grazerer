@@ -259,7 +259,7 @@ void testing() {
                 }
                 return true;
             })),
-            drive_sys.DriveForwardCmd(24),
+            drive_sys.DriveToPointCmd(Translation2d(24, 24), vex::forward),
             // drive_sys.TurnDegreesCmd(30, 1)->withTimeout(3),
             // drive_sys.TurnDegreesCmd(45, 1)->withTimeout(3),
             // drive_sys.TurnDegreesCmd(90, 1)->withTimeout(3),
