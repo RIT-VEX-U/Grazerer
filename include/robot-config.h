@@ -88,6 +88,7 @@ enum MatchPaths{
 	BLUE_SAFE_AUTO,
 	RED_SAFE_AUTO,
 	BASIC_SKILLS,
+	NOTHING,
 };
 extern MatchPaths matchpath;
 extern bool blue_alliance();

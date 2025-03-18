@@ -87,14 +87,13 @@ void opcontrol() {
         }
         konamiCode();
 
-        // OdometryBase *odombase = &odom;
-        // Pose2d pos = odombase->get_position();
-        // printf("ODO X: %.2f, Y: %.2f, R:%.2f\n", pos.x(), pos.y(), pos.rotation().degrees());
-
-        double left = (double)con.Axis3.position() / 100;
-        double right = (double)con.Axis2.position() / 100;
         if(runDrive){
+            double left = (double)con.Axis3.position() / 100;
+            double right = (double)con.Axis2.position() / 100;
             drive_sys.drive_tank(left, right, 1, TankDrive::BrakeType::None);
+            OdometryBase *odombase = &odom;
+            Pose2d pos = odombase->get_position();
+            printf("ODO X: %.2f, Y: %.2f, R:%.2f\n", pos.x(), pos.y(), pos.rotation().degrees());
         }
 
         vexDelay(20);
@@ -245,25 +244,34 @@ void testing() {
         }
     };
 
-    con.ButtonX.pressed([]() {
+    con.ButtonX.pressed([]() {        
         if(!runDrive){
             printf("running test");
             CommandController cc{
             new Async(new FunctionCommand([]() {
                 while (true) {
+                    // printf(
+                    //     "ODO X: %f ODO Y: %f, ODO ROT: %f TURNPID ERROR: %f\n", odom.get_position().x(),
+                    //     odom.get_position().y(), odom.get_position().rotation().degrees(), turn_pid.get_error()
+                    // );
                     printf(
-                        "ODO X: %f ODO Y: %f, ODO ROT: %f TURNPID ERROR: %f\n", odom.get_position().x(),
-                        odom.get_position().y(), odom.get_position().rotation().degrees(), turn_pid.get_error()
+                        "%f,%f,%f\n", odom.get_position().x(),
+                        odom.get_position().y(), odom.get_position().rotation().degrees()
                     );
                     vexDelay(100);
                 }
                 return true;
             })),
-            drive_sys.DriveToPointCmd(Translation2d(24, 24), vex::forward),
-            // drive_sys.TurnDegreesCmd(30, 1)->withTimeout(3),
-            // drive_sys.TurnDegreesCmd(45, 1)->withTimeout(3),
-            // drive_sys.TurnDegreesCmd(90, 1)->withTimeout(3),
-            // drive_sys.TurnDegreesCmd(180, 1)->withTimeout(3),
+            // drive_sys.TurnDegreesCmd(90),
+            // drive_sys.TurnToHeadingCmd(180),
+            // drive_sys.TurnToPointCmd(24, 0),
+            // drive_sys.DriveForwardCmd(24),
+            // drive_sys.DriveTankCmd(-0.5, -0.5)->withTimeout(1),
+            // drive_sys.DriveToPointCmd(0, 0),
+            drive_sys.PurePursuitCmd(PurePursuit::Path({
+                {12, 12}, 
+                {-12, 24}}, 12), vex::fwd),
+            
             };
             cc.run();
         }

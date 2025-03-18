@@ -116,9 +116,10 @@ robot_specs_t robot_cfg = {
 
   .drive_feedback = &drive_pid,
   .turn_feedback = &turn_pid,
-  // .correction_pid = correction_pid_cfg,
+  .correction_pid = correction_pid_cfg,
 };
-MatchPaths matchpath = MatchPaths::BASIC_SKILLS;
+
+MatchPaths matchpath = MatchPaths::NOTHING;
 
 bool blue_alliance() {
     if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
@@ -137,8 +138,8 @@ Pose2d test(24, 96, deg2rad(0));
 Pose2d auto_start_red(16.25, 88.75, deg2rad(180));
 Pose2d auto_start_blue(127.75, 88.75, deg2rad(0));
 Pose2d zero(0, 0, deg2rad(0));
-Pose2d OpticalSensorLoc(-3.83, 0.2647, deg2rad(270));
-OdometrySerial odom(true, true, skills_start, OpticalSensorLoc, vex::PORT1, 115200);
+Pose2d opticalSensorLoc(-3.83, 0.2647, deg2rad(270));
+OdometrySerial odom(true, true, zero, opticalSensorLoc, vex::PORT1, 115200);
 
 OdometryBase *base = &odom;
 
@@ -157,15 +158,16 @@ void robot_init() {
     vexDelay(1000);
     if (matchpath == MatchPaths::RED_SAFE_AUTO) {
         printf("RED\n");
-        odom.send_config(auto_start_red, OpticalSensorLoc, false);
+        odom.send_config(auto_start_red, opticalSensorLoc, false);
     } else if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
         printf("BLUE\n");
-        odom.send_config(auto_start_blue, OpticalSensorLoc, false);
+        odom.send_config(auto_start_blue, opticalSensorLoc, false);
     } else if (matchpath == MatchPaths::BASIC_SKILLS) {
         printf("SKILLS\n");
-        odom.send_config(zero, OpticalSensorLoc, false);
+        odom.send_config(skills_start, opticalSensorLoc, false);
     } else {
         printf("ERROR: NO PATH GIVEN\n");
+        odom.send_config(zero, opticalSensorLoc, false);
     }
     printf("started!\n");
     // printf("%d, %d\n", competition::bStopTasksBetweenModes, competition::bStopAllTasksBetweenModes);
