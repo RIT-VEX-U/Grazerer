@@ -270,7 +270,9 @@ void testing() {
             // drive_sys.DriveToPointCmd(0, 0),
             drive_sys.PurePursuitCmd(PurePursuit::Path({
                 {12, 12}, 
-                {-12, 24}}, 12), vex::fwd),
+                {-12, 24},
+                {12, 36}, 
+                {0, 48}}, 8), vex::fwd),
             
             };
             cc.run();
