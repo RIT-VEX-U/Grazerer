@@ -2,4 +2,4 @@ BasedOnStyle: LLVM
 ColumnLimit : 120
 IndentWidth : 4 
 ContinuationIndentWidth : 2 
-AlignAfterOpenBracket: BlockIndent
+AlignAfterOpenBracket: BAS_BlockIndent
