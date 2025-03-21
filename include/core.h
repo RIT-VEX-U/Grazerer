@@ -41,7 +41,6 @@
 #include "../core/include/utils/pure_pursuit.h"
 #include "../core/include/utils/serializer.h"
 #include "../core/include/utils/state_machine.h"
-#include "../core/include/utils/vector2d.h"
 
 // Base package
 #include "../core/include/robot_specs.h"
