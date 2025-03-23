@@ -118,7 +118,7 @@ robot_specs_t robot_cfg = {
 
   .drive_feedback = &drive_pid,
   .turn_feedback = &turn_pid,
-  // .correction_pid = correction_pid_cfg,
+  .correction_pid = correction_pid_cfg,
 };
 MatchPaths matchpath = MatchPaths::BASIC_SKILLS;
 
@@ -140,7 +140,7 @@ Pose2d auto_start_red{16.25, 88.75, from_degrees(180)};
 Pose2d auto_start_blue{127.75, 88.75, from_degrees(0)};
 Pose2d zero{0, 0, from_degrees(0)};
 
-OdometrySerial odom(true, true, skills_start, Pose2d{-3.83, 0.2647, from_degrees(270)}, vex::PORT1, 115200);
+OdometrySerial odom(true, true, zero, Pose2d{-3.83, 0.2647, from_degrees(270)}, vex::PORT1, 115200);
 
 OdometryBase *base = &odom;
 
@@ -166,7 +166,7 @@ void robot_init() {
         odom.send_config(auto_start_blue, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
     } else if (matchpath == MatchPaths::BASIC_SKILLS) {
         printf("SKILLS\n");
-        odom.send_config(skills_start, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+        odom.send_config(zero, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
     } else {
         printf("ERROR: NO PATH GIVEN\n");
     }

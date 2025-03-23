@@ -14,7 +14,7 @@ void opcontrol() {
     // vexDelay(1000);
     // autonomous();
     // return;
-    // testing();
+    testing();
     wallstakemech_sys.hold = false;
     // intake_sys.conveyor_stop();
     intake_sys.setLight(false);
@@ -73,7 +73,7 @@ void opcontrol() {
         double left = (double)con.Axis3.position() / 100;
         double right = (double)con.Axis2.position() / 100;
 
-        drive_sys.drive_tank(left, right, 1, TankDrive::BrakeType::None);
+        // drive_sys.drive_tank(left, right, 1, TankDrive::BrakeType::None);
 
         vexDelay(20);
     }
@@ -115,11 +115,7 @@ void testing() {
               }
               return true;
           })),
-          drive_sys.TurnDegreesCmd(15, 1),
-          // drive_sys.TurnDegreesCmd(30, 1)->withTimeout(3),
-          // drive_sys.TurnDegreesCmd(45, 1)->withTimeout(3),
-          // drive_sys.TurnDegreesCmd(90, 1)->withTimeout(3),
-          // drive_sys.TurnDegreesCmd(180, 1)->withTimeout(3),
+          drive_sys.PurePursuitCmd(PurePursuit::Path({{-12, 12}, {12, 24}, {-12, 36}, {0, 48}}, 8), vex::fwd),
         };
         cc.run();
     });
