@@ -1,5 +1,10 @@
 #include "robot-config.h"
 #include "../core/include/subsystems/fun/video.h"
+#include "vdb/builtins.hpp"
+#include "vdb/protocol.hpp"
+#include "vdb/registry.hpp"
+#include "vdb/tests.hpp"
+#include "wrapper_device.hpp"
 
 #include "core.h"
 #include "inttypes.h"
@@ -146,6 +151,15 @@ OdometryBase *base = &odom;
 
 TankDrive drive_sys(left_drive_motors, right_drive_motors, robot_cfg, &odom);
 
+// A global instance of vex::brain used for printing to the V5 brain screen
+void print_multiline(const std::string &str, int y, int x);
+
+VDB::Device dev1{vex::PORT1, 115200 * 2};
+// VDB::Device dev2{vex::PORT10, 115200 * 8};
+VDP::Registry reg1{&dev1, VDP::Registry::Side::Controller};
+// VDP::Registry reg2{&dev2, VDP::Registry::Side::Listener};
+vex::inertial imu(vex::PORT10, vex::turnType::right);
+
 // ================ UTILS ================
 
 /**
@@ -181,7 +195,37 @@ void robot_init() {
     // wallstake_mech.set_voltage(5);
     wall_rot.setReversed(true);
 
+    printf("opening channel\n");
+    auto motor1Data =
+      (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("motor", new VDP::Motor("motor", left_back_bottom));
+    auto motor2Data =
+      (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("motor", new VDP::Motor("motor", right_back_top));
+    auto odomData = (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("motor", new VDP::Odometry("odom", odom));
+
+    VDP::ChannelID chan1 = reg1.open_channel(motor1Data);
+    VDP::ChannelID chan2 = reg1.open_channel(motor2Data);
+    VDP::ChannelID chan3 = reg1.open_channel(odomData);
+    // VDP::ChannelID chan2 = reg1.open_channel(distData);
+
+    bool ready = reg1.negotiate();
+
+    if (!ready) {
+        Brain.Screen.printAt(20, 20, "FAILED");
+        while (1) {
+            vexDelay(1000);
+        };
+    }
+
     while (true) {
+        motor1Data->fetch();
+        motor2Data->fetch();
+        odomData->fetch();
+        // distData->fetch();
+        reg1.send_data(chan1, motor1Data);
+        reg1.send_data(chan2, motor1Data);
+        reg1.send_data(chan3, motor1Data);
+        // reg1.send_data(chan2, distData);
+        vexDelay(100);
         // pose_t pose = base->get_position();
         // pose_t posetank = tankodom.get_position();
         // printf("%" PRIu64 ", %f, %f, %f\n", vexSystemHighResTimeGet(), pose.x, pose.y, pose.rot);
