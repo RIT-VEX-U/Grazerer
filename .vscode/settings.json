@@ -6,6 +6,32 @@
 	"files.associations": {
 		"new": "cpp",
 		"system_error": "cpp",
-		"vector": "cpp"
+		"vector": "cpp",
+		"*.tcc": "cpp",
+		"complex": "cpp",
+		"deque": "cpp",
+		"list": "cpp",
+		"string": "cpp",
+		"unordered_map": "cpp",
+		"unordered_set": "cpp",
+		"exception": "cpp",
+		"fstream": "cpp",
+		"iomanip": "cpp",
+		"ios": "cpp",
+		"istream": "cpp",
+		"limits": "cpp",
+		"mutex": "cpp",
+		"ostream": "cpp",
+		"sstream": "cpp",
+		"streambuf": "cpp",
+		"thread": "cpp",
+		"type_traits": "cpp",
+		"tuple": "cpp",
+		"matrixfunctions": "cpp",
+		"array": "cpp",
+		"hash_map": "cpp",
+		"initializer_list": "cpp",
+		"utility": "cpp",
+		"valarray": "cpp"
 	}
 }
