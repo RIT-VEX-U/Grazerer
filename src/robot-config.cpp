@@ -146,6 +146,7 @@ OdometryBase *base = &odom;
 
 TankDrive drive_sys(left_drive_motors, right_drive_motors, robot_cfg, &odom);
 
+
 // ================ UTILS ================
 
 /**
@@ -158,18 +159,18 @@ void robot_init() {
     // matchpath = MatchPaths::RED_SAFE_AUTO;
     //  odom.send_config(auto_start_red, pose_t{-3.83, 0.2647, 270}, false);
     vexDelay(1000);
-    if (matchpath == MatchPaths::RED_SAFE_AUTO) {
-        printf("RED\n");
-        odom.send_config(auto_start_red, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
-    } else if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
-        printf("BLUE\n");
-        odom.send_config(auto_start_blue, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
-    } else if (matchpath == MatchPaths::BASIC_SKILLS) {
-        printf("SKILLS\n");
-        odom.send_config(skills_start, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
-    } else {
-        printf("ERROR: NO PATH GIVEN\n");
-    }
+    // if (matchpath == MatchPaths::RED_SAFE_AUTO) {
+    //     printf("RED\n");
+    //     odom.send_config(auto_start_red, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+    // } else if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
+    //     printf("BLUE\n");
+    //     odom.send_config(auto_start_blue, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+    // } else if (matchpath == MatchPaths::BASIC_SKILLS) {
+    //     printf("SKILLS\n");
+    //     odom.send_config(skills_start, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+    // } else {
+    //     printf("ERROR: NO PATH GIVEN\n");
+    // }
     printf("started!\n");
     // printf("%d, %d\n", competition::bStopTasksBetweenModes, competition::bStopAllTasksBetweenModes);
     // competition::bStopTasksBetweenModes = true;

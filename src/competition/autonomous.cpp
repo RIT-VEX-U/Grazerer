@@ -6,16 +6,7 @@
 
 void skills();
 
-void autonomous() {
-    intake_sys.color_sort_on();
-    if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
-        auto_blue_safe();
-    } else if (matchpath == MatchPaths::RED_SAFE_AUTO) {
-        auto_red_safe();
-    } else if (matchpath == MatchPaths::BASIC_SKILLS) {
-        skills_basic();
-    }
-}
+void autonomous() {}
 
 class DebugCommand : public AutoCommand {
   public:
