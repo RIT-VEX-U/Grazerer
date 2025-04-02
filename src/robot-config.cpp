@@ -10,6 +10,7 @@ vex::controller con;
 
 // ================ INPUTS ================
 // Digital sensors
+vex::inertial imu(vex::PORT10);
 
 // ================ OUTPUTS ================
 // Motors
@@ -140,7 +141,8 @@ Pose2d auto_start_red{16.25, 88.75, from_degrees(180)};
 Pose2d auto_start_blue{127.75, 88.75, from_degrees(0)};
 Pose2d zero{0, 0, from_degrees(0)};
 
-OdometrySerial odom(true, true, zero, Pose2d{-3.83, 0.2647, from_degrees(270)}, vex::PORT1, 115200);
+// OdometrySerial odom(true, true, zero, Pose2d{-3.83, 0.2647, from_degrees(270)}, vex::PORT1, 115200);
+OdometryTank odom(left_drive_motors, right_drive_motors, robot_cfg, &imu);
 
 OdometryBase *base = &odom;
 
@@ -152,6 +154,7 @@ TankDrive drive_sys(left_drive_motors, right_drive_motors, robot_cfg, &odom);
  * Main robot initialization on startup. Runs before opcontrol and autonomous are started.
  */
 void robot_init() {
+    odom.set_position({0, 0, 0});
     set_video("Flipped.mpreg");
 
     screen::start_screen(Brain.Screen, {new screen::PIDPage(turn_pid, "turnpid"), new VideoPlayer()}, 1);
@@ -160,13 +163,13 @@ void robot_init() {
     vexDelay(1000);
     if (matchpath == MatchPaths::RED_SAFE_AUTO) {
         printf("RED\n");
-        odom.send_config(auto_start_red, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+        // odom.send_config(auto_start_red, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
     } else if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
         printf("BLUE\n");
-        odom.send_config(auto_start_blue, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+        // odom.send_config(auto_start_blue, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
     } else if (matchpath == MatchPaths::BASIC_SKILLS) {
         printf("SKILLS\n");
-        odom.send_config(zero, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+        // odom.send_config(zero, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
     } else {
         printf("ERROR: NO PATH GIVEN\n");
     }
@@ -180,6 +183,11 @@ void robot_init() {
     // mcglight_board.set(true);
     // wallstake_mech.set_voltage(5);
     wall_rot.setReversed(true);
+
+    imu.startCalibration();
+    while (imu.isCalibrating()) {
+        vexDelay(10);
+    }
 
     while (true) {
         // pose_t pose = base->get_position();

@@ -6,7 +6,7 @@
 void testing();
 
 void auto__();
-
+bool EnableDrive = true;
 /**
  * Main entrypoint for the driver control period
  */
@@ -72,8 +72,9 @@ void opcontrol() {
 
         double left = (double)con.Axis3.position() / 100;
         double right = (double)con.Axis2.position() / 100;
-
-        // drive_sys.drive_tank(left, right, 1, TankDrive::BrakeType::None);
+        if (EnableDrive) {
+            drive_sys.drive_tank(left, right, 1, TankDrive::BrakeType::None);
+        }
 
         vexDelay(20);
     }
@@ -104,6 +105,7 @@ void testing() {
 
     con.ButtonX.pressed([]() {
         printf("running test");
+        EnableDrive = false;
         CommandController cc{
           new Async(new FunctionCommand([]() {
               while (true) {
@@ -115,8 +117,11 @@ void testing() {
               }
               return true;
           })),
-          drive_sys.PurePursuitCmd(PurePursuit::Path({{-12, 12}, {12, 24}, {-12, 36}, {0, 48}}, 8), vex::fwd),
+          odom.SetPositionCmd({0, 0, 0}), drive_sys.DriveForwardCmd(24), drive_sys.DriveToPointCmd(0, 0, vex::reverse),
+          drive_sys.DriveTankCmd(0.2, 0.2)->withTimeout(1)
+          //   drive_sys.PurePursuitCmd(PurePursuit::Path({{-12, 12}, {12, 24}, {-12, 36}, {0, 48}}, 8), vex::fwd),
         };
         cc.run();
+        EnableDrive = true;
     });
 }
