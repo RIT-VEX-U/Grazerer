@@ -115,7 +115,7 @@ void testing() {
               }
               return true;
           })),
-          drive_sys.PurePursuitCmd(PurePursuit::Path({{-12, 12}, {12, 24}, {-12, 36}, {0, 48}}, 8), vex::fwd),
+          //   drive_sys.PurePursuitCmd(PurePursuit::Path({{-12, 12}, {12, 24}, {-12, 36}, {0, 48}}, 8), vex::fwd),
         };
         cc.run();
     });

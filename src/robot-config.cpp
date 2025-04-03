@@ -15,7 +15,7 @@ vex::controller con;
 
 // ================ INPUTS ================
 // Digital sensors
-
+vex::inertial imu(vex::PORT10, vex::turnType::right);
 // ================ OUTPUTS ================
 // Motors
 vex::motor left_back_bottom(vex::PORT4, vex::gearSetting::ratio6_1, true);
@@ -118,6 +118,7 @@ robot_specs_t robot_cfg = {
   .robot_radius = 12,
   .odom_wheel_diam = 2.75,
   .odom_gear_ratio = 0.75,
+  .dist_between_wheels = 11.5,
 
   .drive_correction_cutoff = 10,
 
@@ -145,7 +146,8 @@ Pose2d auto_start_red{16.25, 88.75, from_degrees(180)};
 Pose2d auto_start_blue{127.75, 88.75, from_degrees(0)};
 Pose2d zero{0, 0, from_degrees(0)};
 
-OdometrySerial odom(true, true, zero, Pose2d{-3.83, 0.2647, from_degrees(270)}, vex::PORT1, 115200);
+// OdometrySerial odom(true, true, zero, Pose2d{-3.83, 0.2647, from_degrees(270)}, vex::PORT1, 115200);
+OdometryTank odom(left_drive_motors, right_drive_motors, robot_cfg);
 
 OdometryBase *base = &odom;
 
@@ -158,7 +160,6 @@ VDB::Device dev1{vex::PORT1, 115200 * 2};
 // VDB::Device dev2{vex::PORT10, 115200 * 8};
 VDP::Registry reg1{&dev1, VDP::Registry::Side::Controller};
 // VDP::Registry reg2{&dev2, VDP::Registry::Side::Listener};
-vex::inertial imu(vex::PORT10, vex::turnType::right);
 
 // ================ UTILS ================
 
@@ -167,6 +168,7 @@ vex::inertial imu(vex::PORT10, vex::turnType::right);
  */
 void robot_init() {
     set_video("Flipped.mpreg");
+    odom.set_position({0, 0, 0});
 
     screen::start_screen(Brain.Screen, {new screen::PIDPage(turn_pid, "turnpid"), new VideoPlayer()}, 1);
     // matchpath = MatchPaths::RED_SAFE_AUTO;
@@ -174,13 +176,13 @@ void robot_init() {
     vexDelay(1000);
     if (matchpath == MatchPaths::RED_SAFE_AUTO) {
         printf("RED\n");
-        odom.send_config(auto_start_red, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+        // odom.send_config(auto_start_red, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
     } else if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
         printf("BLUE\n");
-        odom.send_config(auto_start_blue, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+        // odom.send_config(auto_start_blue, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
     } else if (matchpath == MatchPaths::BASIC_SKILLS) {
         printf("SKILLS\n");
-        odom.send_config(zero, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+        // odom.send_config(zero, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
     } else {
         printf("ERROR: NO PATH GIVEN\n");
     }
@@ -200,7 +202,7 @@ void robot_init() {
       (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("motor", new VDP::Motor("motor", left_back_bottom));
     auto motor2Data =
       (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("motor", new VDP::Motor("motor", right_back_top));
-    auto odomData = (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("motor", new VDP::Odometry("odom", odom));
+    auto odomData = (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("odom", new VDP::Odometry("odom", odom));
 
     VDP::ChannelID chan1 = reg1.open_channel(motor1Data);
     VDP::ChannelID chan2 = reg1.open_channel(motor2Data);
@@ -222,8 +224,8 @@ void robot_init() {
         odomData->fetch();
         // distData->fetch();
         reg1.send_data(chan1, motor1Data);
-        reg1.send_data(chan2, motor1Data);
-        reg1.send_data(chan3, motor1Data);
+        reg1.send_data(chan2, motor2Data);
+        reg1.send_data(chan3, odomData);
         // reg1.send_data(chan2, distData);
         vexDelay(100);
         // pose_t pose = base->get_position();
