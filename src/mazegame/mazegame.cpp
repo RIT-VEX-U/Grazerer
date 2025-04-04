@@ -9,17 +9,20 @@ int MazeGame::num_penalties = 0;
 void MazeGame::init_boundary_lines()
 {
   // DQ lines
-  smup_list.push_back({{23.5, 0}, {23.5, 47}});
-  smup_list.push_back({{23.5, 47}, {47, 47}});
-  smup_list.push_back({{47, 47}, {47, 118}});
+  smup_list.push_back({{24, 24}, {24, 72}});
+  smup_list.push_back({{24, 72}, {120, 72}});
+  smup_list.push_back({{120, 72}, {120, 24}});
+
+  smup_list.push_back({{96, 72}, {96, 96}});
 
   // Penalty Lines
-  penalty_list.push_back({{0, 68}, {21, 68}});
-  penalty_list.push_back({{23, 92}, {44, 92}});
-  penalty_list.push_back({{23, 92}, {23, 114}});
-  penalty_list.push_back({{23, 114}, {70, 114}});
-  penalty_list.push_back({{50, 22}, {75, 22}});
-  penalty_list.push_back({{75, 23}, {75, 40}});
+  penalty_list.push_back({{72, 0}, {72, 48}});
+
+  penalty_list.push_back({{48, 48}, {96, 48}});
+
+  penalty_list.push_back({{24, 24}, {48, 24}});
+
+  penalty_list.push_back({{96, 24}, {120, 24}});
 }
 
 bool MazeGame::is_single_penalty()
@@ -37,7 +40,7 @@ bool MazeGame::is_single_penalty()
     if(intersect.size() > 0)
     {
       is_penalty = true;
-      break;
+      break;  
     }
   }
 
