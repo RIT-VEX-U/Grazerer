@@ -1,6 +1,6 @@
-#include "mazegame.h"
+#include "mazegame/mazegame.h"
 
-#define ROBOT_RADIUS 2
+#define ROBOT_RADIUS 6.5
 
 std::vector<MazeGame::line_t> MazeGame::penalty_list, MazeGame::smup_list;
 int MazeGame::num_smups = 0;
@@ -46,7 +46,7 @@ bool MazeGame::is_single_penalty()
 
   if(!was_prev_penalty && is_penalty)
   {
-    // main_controller.rumble(".");
+    con.rumble(".");
     num_penalties++;
   }
   
@@ -75,7 +75,9 @@ bool MazeGame::is_super_mega_ultra_penalty()
   }
 
   if(!was_prev_penalty && is_penalty)
+  {
     num_smups++;
+  }
   
   was_prev_penalty = is_penalty;
 

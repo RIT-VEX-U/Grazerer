@@ -134,13 +134,15 @@ bool blue_alliance() {
 ClamperSys clamper_sys{};
 IntakeSys intake_sys{};
 
-Pose2d skills_start{18.5, 96, from_degrees(0)};
-Pose2d test{24, 96, from_degrees(0)};
-Pose2d auto_start_red{16.25, 88.75, from_degrees(180)};
-Pose2d auto_start_blue{127.75, 88.75, from_degrees(0)};
-Pose2d zero{0, 0, from_degrees(0)};
+// Pose2d skills_start{18.5, 96, from_degrees(0)};
+// Pose2d test{24, 96, from_degrees(0)};
+// Pose2d auto_start_red{16.25, 88.75, from_degrees(180)};
+// Pose2d auto_start_blue{127.75, 88.75, from_degrees(0)};
+// Pose2d zero{0, 0, from_degrees(0)};
+vex::inertial imu(vex::PORT10);
 
-OdometrySerial odom(true, true, skills_start, Pose2d{-3.83, 0.2647, from_degrees(270)}, vex::PORT1, 115200);
+// OdometrySerial odom(true, true, maze_game, Pose2d{-3.83, 0.2647, from_degrees(270)}, vex::PORT1, 115200);
+OdometryTank odom(left_drive_motors, right_drive_motors, robot_cfg, &imu);
 
 OdometryBase *base = &odom;
 
@@ -155,7 +157,7 @@ TankDrive drive_sys(left_drive_motors, right_drive_motors, robot_cfg, &odom);
 void robot_init() {
     set_video("Flipped.mpreg");
 
-    screen::start_screen(Brain.Screen, {new screen::PIDPage(turn_pid, "turnpid"), new VideoPlayer()}, 1);
+    // screen::start_screen(Brain.Screen, {new screen::PIDPage(turn_pid, "turnpid"), new VideoPlayer()}, 1);
     // matchpath = MatchPaths::RED_SAFE_AUTO;
     //  odom.send_config(auto_start_red, pose_t{-3.83, 0.2647, 270}, false);
     vexDelay(1000);
@@ -182,7 +184,7 @@ void robot_init() {
     // wallstake_mech.set_voltage(5);
     wall_rot.setReversed(true);
 
-    while (true) {
+    while (imu.isCalibrating()) {
         // pose_t pose = base->get_position();
         // pose_t posetank = tankodom.get_position();
         // printf("%" PRIu64 ", %f, %f, %f\n", vexSystemHighResTimeGet(), pose.x, pose.y, pose.rot);
@@ -193,6 +195,6 @@ void robot_init() {
         // wallstake_mech.set_setpoint(from_degrees(0));
         // vexDelay(5000);
         // wallstake_mech.set_setpoint(from_degrees(180));
-        vexDelay(100);
+        vexDelay(10);
     }
 }

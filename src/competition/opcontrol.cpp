@@ -2,12 +2,14 @@
 #include "competition/autonomous.h"
 #include "robot-config.h"
 #include "vex.h"
-#include "mazegame.h"
+#include "mazegame/mazegame.h"
 
 /**
  * Main entrypoint for the driver control period
  */
 void opcontrol() {
+    Pose2d maze_game{108, 84, from_degrees(0)};
+    odom.set_position(maze_game);
 
     MazeGame::init_boundary_lines();
     bool is_end = false;
@@ -27,8 +29,16 @@ void opcontrol() {
         MazeGame::is_single_penalty();   
         MazeGame::is_super_mega_ultra_penalty();
 
-        printf("Roll: %f ", imu.roll());
-        if(pos.x() > 48 && pos.x() < 96 && pos.y() > 72 && imu.roll() < 15)
+        // printf("Roll: %f ", imu.roll());
+        printf(
+            "ODO X: %.2f, Y: %.2f, R:%.2f\n", pos.x(), pos.y(), pos.rotation().degrees()
+        );
+
+        con.Screen.clearScreen();
+        con.Screen.setCursor(1, 0);
+        con.Screen.print("Penalties: %d", MazeGame::num_penalties + MazeGame::num_smups);
+
+        if(pos.x() > 48 && pos.x() < 96 && pos.y() > 72)
         {
             int score = game_timer.time(sec) + (MazeGame::num_penalties * 5) + (MazeGame::num_smups * 45);
             con.Screen.clearScreen();
