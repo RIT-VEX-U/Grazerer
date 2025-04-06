@@ -11,7 +11,14 @@
 
 namespace VDP {
 Timestamped::Timestamped(std::string name, Part *data)
-    : Record(name), timestamp(new Uint32("timestamp", []() { return vexSystemTimeGet(); })), data(data) {
+    : Record(name), timestamp(new Float(
+                      "timestamp",
+                      []() {
+                          printf("vex time: %f\n", (float)vexSystemTimeGet() / 1000);
+                          return (float)vexSystemTimeGet() / 1000;
+                      }
+                    )),
+      data(data) {
     Record::setFields({timestamp, (PartPtr)data});
 }
 void Timestamped::fetch() {
@@ -42,6 +49,25 @@ void Odometry::fetch() {
     X->setValue((float)odom.get_position().x());
     Y->setValue((float)odom.get_position().y());
     ROT->setValue((float)odom.get_position().rotation().degrees());
+}
+
+PIDRecord::PIDRecord(std::string name, PID &pid)
+    : Record(std::move(name)), pid(pid), P(new Float("P")), I(new Float("I")), D(new Float("D")),
+      ERROR(new Float("Error")), OUTPUT(new Float("Output")), TYPE(new String("Type")) {
+    Record::setFields({TYPE, P, I, D, ERROR, OUTPUT});
+}
+
+void PIDRecord::fetch() {
+    P->setValue((float)pid.config.p);
+    I->setValue((float)pid.config.i);
+    D->setValue((float)pid.config.d);
+    ERROR->setValue((float)pid.get_error());
+    OUTPUT->setValue((float)pid.get_output());
+    if (pid.config.error_method == PID::ANGULAR) {
+        TYPE->setValue("Angular");
+    } else {
+        TYPE->setValue("Linear");
+    }
 }
 
 } // namespace VDP

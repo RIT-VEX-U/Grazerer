@@ -14,7 +14,7 @@ class Timestamped : public Record {
     void fetch();
 
   private:
-    std::shared_ptr<Uint32> timestamp;
+    std::shared_ptr<Float> timestamp;
     PartPtr data;
 };
 
@@ -44,5 +44,21 @@ class Odometry : public Record {
     std::shared_ptr<Float> X;
     std::shared_ptr<Float> Y;
     std::shared_ptr<Float> ROT;
+};
+
+class PIDRecord : public Record {
+  public:
+    PIDRecord(std::string name, PID &pid);
+    void fetch() override;
+
+  private:
+    PID &pid;
+
+    std::shared_ptr<Float> P;
+    std::shared_ptr<Float> I;
+    std::shared_ptr<Float> D;
+    std::shared_ptr<Float> ERROR;
+    std::shared_ptr<Float> OUTPUT;
+    std::shared_ptr<String> TYPE;
 };
 } // namespace VDP
