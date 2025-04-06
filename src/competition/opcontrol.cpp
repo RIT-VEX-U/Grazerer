@@ -67,7 +67,8 @@ void opcontrol() {
         OdometryBase *odombase = &odom;
         Pose2d pos = odombase->get_position();
         printf(
-          "ODO X: %.2f, Y: %.2f, R:%.2f, Concurr: %f\n", pos.x(), pos.y(), pos.rotation().degrees(), conveyor.current()
+          "ODO X: %.2f, Y: %.2f, R:%.2f, left_enc_pos: %f, right_enc_pos, %f\n", pos.x(), pos.y(),
+          pos.rotation().degrees(), left_enc.rotation(vex::degrees), right_enc.rotation(vex::degrees)
         );
 
         double left = (double)con.Axis3.position() / 100;

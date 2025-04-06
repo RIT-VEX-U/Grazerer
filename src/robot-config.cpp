@@ -11,7 +11,8 @@ vex::controller con;
 // ================ INPUTS ================
 // Digital sensors
 vex::inertial imu(vex::PORT10);
-
+CustomEncoder left_enc(Brain.ThreeWirePort.D, 2048);
+CustomEncoder right_enc(Brain.ThreeWirePort.E, 2048);
 // ================ OUTPUTS ================
 // Motors
 vex::motor left_back_bottom(vex::PORT4, vex::gearSetting::ratio6_1, true);
@@ -114,6 +115,7 @@ robot_specs_t robot_cfg = {
   .robot_radius = 12,
   .odom_wheel_diam = 2.75,
   .odom_gear_ratio = 0.75,
+  .dist_between_wheels = 11.5,
 
   .drive_correction_cutoff = 10,
 
@@ -142,7 +144,7 @@ Pose2d auto_start_blue{127.75, 88.75, from_degrees(0)};
 Pose2d zero{0, 0, from_degrees(0)};
 
 // OdometrySerial odom(true, true, zero, Pose2d{-3.83, 0.2647, from_degrees(270)}, vex::PORT1, 115200);
-OdometryTank odom(left_drive_motors, right_drive_motors, robot_cfg, &imu);
+OdometryTank odom(left_enc, right_enc, robot_cfg);
 
 OdometryBase *base = &odom;
 

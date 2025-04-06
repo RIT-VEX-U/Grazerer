@@ -13,7 +13,7 @@ extern vex::controller con;
 // Digital sensors
 
 // Analog sensors
-extern CustomEncoder Left_enc;
+extern CustomEncoder left_enc;
 extern CustomEncoder right_enc;
 extern CustomEncoder front_enc;
 
