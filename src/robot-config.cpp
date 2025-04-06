@@ -67,9 +67,9 @@ const vex::controller::button &ColorSortToggle = con.ButtonLeft;
 
 // ================ SUBSYSTEMS ================
 PID::pid_config_t drive_pid_cfg{
-  .p = 0.08,
-  .i = 0.002,
-  .d = 0.008,
+  .p = 0.5,
+  // .i = 0.002,
+  // .d = 0.008,
   .deadband = 0.5,
   .on_target_time = 0.1,
 };
@@ -147,11 +147,12 @@ Pose2d auto_start_blue{127.75, 88.75, from_degrees(0)};
 Pose2d zero{0, 0, from_degrees(0)};
 
 // OdometrySerial odom(true, true, zero, Pose2d{-3.83, 0.2647, from_degrees(270)}, vex::PORT1, 115200);
-OdometryTank odom(left_drive_motors, right_drive_motors, robot_cfg);
+OdometryTank odom(left_drive_motors, right_drive_motors, robot_cfg, &imu);
 
 OdometryBase *base = &odom;
 
 TankDrive drive_sys(left_drive_motors, right_drive_motors, robot_cfg, &odom);
+ManualTuner turnpid_tuner(turn_pid, drive_sys);
 
 // A global instance of vex::brain used for printing to the V5 brain screen
 void print_multiline(const std::string &str, int y, int x);
@@ -200,12 +201,12 @@ void robot_init() {
     printf("opening channel\n");
     auto motor1Data =
       (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("motor", new VDP::Motor("motor", left_back_bottom));
-    auto motor2Data =
-      (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("motor", new VDP::Motor("motor", right_back_top));
+    auto turnPIDData =
+      (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("turnpid", new VDP::PIDRecord("turnpid", turn_pid));
     auto odomData = (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("odom", new VDP::Odometry("odom", odom));
 
     VDP::ChannelID chan1 = reg1.open_channel(motor1Data);
-    VDP::ChannelID chan2 = reg1.open_channel(motor2Data);
+    VDP::ChannelID chan2 = reg1.open_channel(turnPIDData);
     VDP::ChannelID chan3 = reg1.open_channel(odomData);
     // VDP::ChannelID chan2 = reg1.open_channel(distData);
 
@@ -220,11 +221,11 @@ void robot_init() {
 
     while (true) {
         motor1Data->fetch();
-        motor2Data->fetch();
+        turnPIDData->fetch();
         odomData->fetch();
         // distData->fetch();
         reg1.send_data(chan1, motor1Data);
-        reg1.send_data(chan2, motor2Data);
+        reg1.send_data(chan2, turnPIDData);
         reg1.send_data(chan3, odomData);
         // reg1.send_data(chan2, distData);
         vexDelay(100);

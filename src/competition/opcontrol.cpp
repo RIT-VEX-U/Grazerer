@@ -10,6 +10,8 @@ void auto__();
 /**
  * Main entrypoint for the driver control period
  */
+bool enableDrive = true;
+
 void opcontrol() {
     // vexDelay(1000);
     // autonomous();
@@ -67,14 +69,14 @@ void opcontrol() {
         OdometryBase *odombase = &odom;
         Pose2d pos = odombase->get_position();
         printf(
-          "ODO X: %.2f, Y: %.2f, R:%.2f, Concurr: %f\n", pos.x(), pos.y(), pos.rotation().degrees(), conveyor.current()
+          "ODO X: %.2f, Y: %.2f, R:%.2f, PID ERROR: %f\n", pos.x(), pos.y(), drive_pid.get_error(), conveyor.current()
         );
 
         double left = (double)con.Axis3.position() / 100;
         double right = (double)con.Axis2.position() / 100;
-
-        // drive_sys.drive_tank(left, right, 1, TankDrive::BrakeType::None);
-
+        if (enableDrive) {
+            drive_sys.drive_tank(left, right, 1, TankDrive::BrakeType::None);
+        }
         vexDelay(20);
     }
 
@@ -104,19 +106,14 @@ void testing() {
 
     con.ButtonX.pressed([]() {
         printf("running test");
-        CommandController cc{
-          new Async(new FunctionCommand([]() {
-              while (true) {
-                  printf(
-                    "ODO X: %f ODO Y: %f, ODO ROT: %f TURNPID ERROR: %f\n", odom.get_position().x(),
-                    odom.get_position().y(), odom.get_position().rotation().degrees(), turn_pid.get_error()
-                  );
-                  vexDelay(100);
-              }
-              return true;
-          })),
-          //   drive_sys.PurePursuitCmd(PurePursuit::Path({{-12, 12}, {12, 24}, {-12, 36}, {0, 48}}, 8), vex::fwd),
-        };
-        cc.run();
+        odom.set_position({0, 0, 0});
+        turnpid_tuner.set_setpoint(180);
+        if (turnpid_tuner.doTuning) {
+            turnpid_tuner.stopTuning();
+            enableDrive = true;
+        } else {
+            enableDrive = false;
+            turnpid_tuner.startTuning();
+        }
     });
 }
