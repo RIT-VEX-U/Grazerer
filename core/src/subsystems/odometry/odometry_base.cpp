@@ -91,35 +91,34 @@ double OdometryBase::smallest_angle(double start_deg, double end_deg) {
     return retval;
 }
 
-double OdometryBase::get_speed() {
+Translation2d OdometryBase::get_speed() {
     mut.lock();
-    double retval = speed;
+    Translation2d retval = speed;
     mut.unlock();
 
     return retval;
 }
 
-double OdometryBase::get_accel() {
+Translation2d OdometryBase::get_accel() {
     mut.lock();
-    double retval = accel;
+    Translation2d retval = accel;
     mut.unlock();
 
     return retval;
 }
 
-double OdometryBase::get_angular_speed_deg() {
+Rotation2d OdometryBase::get_angular_speed() {
     mut.lock();
-    double retval = ang_speed_deg;
+    Rotation2d retval = ang_speed_deg;
     mut.unlock();
 
     return retval;
 }
 
-double OdometryBase::get_angular_accel_deg() {
+Rotation2d OdometryBase::get_angular_accel() {
     mut.lock();
-    double retval = ang_accel_deg;
+    Rotation2d retval = ang_accel_deg;
     mut.unlock();
 
     return retval;
 }
-

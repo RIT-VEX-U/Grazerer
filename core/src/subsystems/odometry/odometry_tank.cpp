@@ -110,30 +110,30 @@ Pose2d OdometryTank::update() {
     current_pos = calculate_new_pos(config, current_pos, lside_revs, rside_revs, angle);
 
     static Pose2d last_pos = current_pos;
-    static double last_speed = 0;
-    static double last_ang_speed = 0;
+    static Translation2d last_speed(0, 0);
+    static Rotation2d last_ang_speed(0);
     static timer tmr;
     bool update_vel_accel = tmr.time(sec) > 0.02;
 
     // This loop runs too fast. Only check at LEAST every 1/10th sec
     if (update_vel_accel) {
         // Calculate robot velocity
-        double this_speed = current_pos.translation().distance(last_pos.translation()) / tmr.time(sec);
+        Translation2d this_speed = current_pos.translation() - last_pos.translation() / tmr.time(sec);
         ema.add_entry(this_speed);
         speed = ema.get_value();
         // Calculate robot acceleration
         accel = (speed - last_speed) / tmr.time(sec);
 
         // Calculate robot angular velocity (deg/sec)
-        ang_speed_deg = smallest_angle(current_pos.rotation().degrees(), last_pos.rotation().degrees()) / tmr.time(sec);
+        ang_speed = smallest_angle(current_pos.rotation().degrees(), last_pos.rotation().degrees()) / tmr.time(sec);
 
         // Calculate robot angular acceleration (deg/sec^2)
-        ang_accel_deg = (ang_speed_deg - last_ang_speed) / tmr.time(sec);
+        ang_accel = (ang_speed - last_ang_speed) / tmr.time(sec);
 
         tmr.reset();
         last_pos = current_pos;
         last_speed = speed;
-        last_ang_speed = ang_speed_deg;
+        last_ang_speed = ang_speed;
     }
 
     return current_pos;
@@ -144,7 +144,7 @@ Pose2d OdometryTank::update() {
  * of the robot, relative to when this method was previously ran.
  */
 Pose2d OdometryTank::calculate_new_pos(
-  robot_specs_t &config, Pose2d &curr_pos, double lside_revs, double rside_revs, double angle_deg
+  robot_specs_t &config, Pose2d &curr_pos, double lside_revs, double rside_revs, Rotation2d new_angle
 ) {
     Pose2d new_pos(0, 0, 0);
 
@@ -156,18 +156,16 @@ Pose2d OdometryTank::calculate_new_pos(
     double rside_diff = (rside_revs - stored_rside_revs) * PI * config.odom_wheel_diam;
     double dist_driven = (lside_diff + rside_diff) / 2.0;
 
-    double angle = angle_deg * PI / 180.0; // Degrees to radians
-
     // Create a vector from the change in distance in the current direction of the robot
     // deg2rad((smallest_angle(curr_pos.rot, angle_deg)/2 + curr_pos.rot, dist_driven)
-    Translation2d chg_point(dist_driven, Rotation2d(angle));
+    Translation2d chg_point(dist_driven, new_angle);
 
     // Create a vector from the current position in reference to X,Y=0,0
     Translation2d curr_point(curr_pos.x(), curr_pos.y());
 
     // Tack on the "difference" vector to the current vector
     Translation2d new_point = curr_point + chg_point;
-    new_pos = Pose2d(new_point, from_degrees(angle_deg));
+    new_pos = Pose2d(new_point, new_angle);
 
     // Store the left and right encoder values to find the difference in the next iteration
     stored_lside_revs = lside_revs;

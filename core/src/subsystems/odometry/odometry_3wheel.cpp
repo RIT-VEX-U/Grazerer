@@ -30,27 +30,26 @@ Pose2d Odometry3Wheel::update() {
     Pose2d updated_pos = calculate_new_pos(lside_delta, rside_delta, offax_delta, current_pos, cfg);
 
     static Pose2d last_pos = updated_pos;
-    static double last_speed = 0;
-    static double last_ang_speed = 0;
+    static Translation2d last_speed(0, 0);
+    static Rotation2d last_ang_speed(0);
     static timer tmr;
 
-    double speed_local = 0;
-    double accel_local = 0;
-    double ang_speed_local = 0;
-    double ang_accel_local = 0;
+    Translation2d speed_local(0, 0);
+    Translation2d accel_local(0, 0);
+    Rotation2d ang_speed_local(0);
+    Rotation2d ang_accel_local(0);
     bool update_vel_accel = tmr.time(sec) > 0.1;
 
     // This loop runs too fast. Only check at LEAST every 1/10th sec
     if (update_vel_accel) {
         // Calculate robot velocity
-        speed_local = updated_pos.translation().distance(last_pos.translation()) / tmr.time(sec);
+        speed_local = updated_pos.translation() - last_pos.translation() / tmr.time(sec);
 
         // Calculate robot acceleration
         accel_local = (speed_local - last_speed) / tmr.time(sec);
 
         // Calculate robot angular velocity (deg/sec)
-        ang_speed_local =
-          smallest_angle(updated_pos.rotation().degrees(), last_pos.rotation().degrees()) / tmr.time(sec);
+        ang_speed_local = updated_pos.rotation() - last_pos.rotation() / tmr.time(sec);
 
         // Calculate robot angular acceleration (deg/sec^2)
         ang_accel_local = (ang_speed_local - last_ang_speed) / tmr.time(sec);
@@ -65,8 +64,8 @@ Pose2d Odometry3Wheel::update() {
     if (update_vel_accel) {
         this->speed = speed_local;
         this->accel = accel_local;
-        this->ang_speed_deg = ang_speed_local;
-        this->ang_accel_deg = ang_accel_local;
+        this->ang_speed = ang_speed_local;
+        this->ang_accel = ang_accel_local;
     }
 
     return current_pos;
@@ -95,27 +94,22 @@ Pose2d Odometry3Wheel::calculate_new_pos(
     double offax_dist = (cfg.wheel_diam / 2.0) * deg2rad(offax_delta_deg);
 
     // Inverse arclength formula for arc distance driven -> robot angle
-    double delta_angle_rad = (rside_dist - lside_dist) / cfg.wheelbase_dist;
-    double delta_angle_deg = rad2deg(delta_angle_rad);
-
-    // Distance along the robot's local Y axis (forward/backward)
-    double dist_local_y = (lside_dist + rside_dist) / 2.0;
-
-    // Distance along the robot's local X axis (right/left)
-    double dist_local_x = offax_dist - (delta_angle_rad * cfg.off_axis_center_dist);
+    Rotation2d delta_angle = (rside_dist - lside_dist) / cfg.wheelbase_dist;
 
     // Change in displacement as a vector, on the local coordinate system (+y = robot fwd)
-    Translation2d local_displacement(dist_local_x, dist_local_y);
+    Translation2d local_displacement(
+      offax_dist - (delta_angle.radians() * cfg.off_axis_center_dist), (lside_dist + rside_dist) / 2.0
+    );
 
     // Rotate the local displacement to match the old robot's rotation
-    double dir_delta_from_trans_rad = local_displacement.theta().radians() - (PI / 2.0);
-    double global_dir_rad = wrap_angle_rad(dir_delta_from_trans_rad + old_pos.rotation().radians());
+    Rotation2d dir_delta_from_trans(local_displacement.theta().radians() - (PI / 2.0));
+    Rotation2d global_dir_rad = dir_delta_from_trans + old_pos.rotation();
     Translation2d global_displacement(local_displacement.norm(), Rotation2d(global_dir_rad));
 
     // Tack on the position change to the old position
     Translation2d new_pos_vec = old_pos.translation() + global_displacement;
 
-    retval = Pose2d(new_pos_vec.x(), new_pos_vec.y(), wrap_angle_rad(old_pos.rotation().radians() + delta_angle_rad));
+    retval = Pose2d(new_pos_vec.x(), new_pos_vec.y(), old_pos.rotation() + delta_angle);
 
     return retval;
 }

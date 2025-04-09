@@ -89,25 +89,25 @@ class OdometryBase {
      * Get the current speed
      * @return the speed at which the robot is moving and grooving (inch/s)
      */
-    virtual double get_speed();
+    virtual Translation2d get_speed();
 
     /**
      * Get the current acceleration
      * @return the acceleration rate of the robot (inch/s^2)
      */
-    virtual double get_accel();
+    virtual Translation2d get_accel();
 
     /**
      * Get the current angular speed in degrees
      * @return the angular velocity at which we are turning (deg/s)
      */
-    double get_angular_speed_deg();
+    Rotation2d get_angular_speed();
 
     /**
      * Get the current angular acceleration in degrees
      * @return the angular acceleration at which we are turning (deg/s^2)
      */
-    double get_angular_accel_deg();
+    Rotation2d get_angular_accel();
 
     inline static constexpr Pose2d zero_pos = Pose2d();
 
@@ -126,8 +126,8 @@ class OdometryBase {
      */
     Pose2d current_pos;
 
-    double speed;         /**< the speed at which we are travelling (inch/s)*/
-    double accel;         /**< the rate at which we are accelerating (inch/s^2)*/
-    double ang_speed_deg; /**< the speed at which we are turning (deg/s)*/
-    double ang_accel_deg; /**< the rate at which we are accelerating our turn (deg/s^2)*/
+    Translation2d speed;  /**< the speed at which we are travelling (inch/s)*/
+    Translation2d accel;  /**< the rate at which we are accelerating (inch/s^2)*/
+    Rotation2d ang_speed; /**< the speed at which we are turning (deg/s)*/
+    Rotation2d ang_accel; /**< the rate at which we are accelerating our turn (deg/s^2)*/
 };

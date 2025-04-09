@@ -6,6 +6,7 @@
 	"files.associations": {
 		"new": "cpp",
 		"system_error": "cpp",
-		"vector": "cpp"
+		"vector": "cpp",
+		"mutex": "cpp"
 	}
 }
