@@ -3,23 +3,27 @@
 #include "robot-config.h"
 #include "vex.h"
 #include "mazegame/mazegame.h"
+#include "mazegame/maze_path.h"
 
 /**
  * Main entrypoint for the driver control period
  */
 void opcontrol() {
-    Pose2d maze_game{108, 84, from_degrees(0)};
-    odom.set_position(maze_game);
+    // Pose2d maze_game{108, 84, from_degrees(0)};
+    // odom.set_position(maze_game);
 
     MazeGame::init_boundary_lines();
     bool is_end = false;
     timer game_timer;
+
+    // maze_auto();
 
     // ================ INIT ================
 
     while (true) {
         OdometryBase *odombase = &odom;
         Pose2d pos = odombase->get_position();
+        // Pose2d pos = odom.get_position();
 
         double f = con.Axis3.position() / 200.0;
         double s = con.Axis1.position() / 200.0;
@@ -49,6 +53,7 @@ void opcontrol() {
             drive_sys.stop();
             return;
         }
+        vexDelay(10);
     }
 
     // ================ PERIODIC ================

@@ -13,7 +13,7 @@ void MazeGame::init_boundary_lines()
   smup_list.push_back({{24, 72}, {120, 72}});
   smup_list.push_back({{120, 72}, {120, 24}});
 
-  smup_list.push_back({{96, 72}, {96, 96}});
+  smup_list.push_back({{96, 96}, {96, 72}});
 
   // Penalty Lines
   penalty_list.push_back({{72, 0}, {72, 48}});
