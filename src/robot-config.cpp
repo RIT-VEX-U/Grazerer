@@ -1,5 +1,6 @@
+#include "core/subsystems/fun/video.h"
+// ad
 #include "robot-config.h"
-#include "../core/include/subsystems/fun/video.h"
 
 #include "core.h"
 #include "inttypes.h"
