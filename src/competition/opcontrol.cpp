@@ -107,13 +107,12 @@ void testing() {
     con.ButtonX.pressed([]() {
         printf("running test");
         odom.set_position({0, 0, 0});
-        turnpid_tuner.set_setpoint(180);
-        if (turnpid_tuner.doTuning) {
-            turnpid_tuner.stopTuning();
-            enableDrive = true;
-        } else {
-            enableDrive = false;
-            turnpid_tuner.startTuning();
-        }
+        CommandController cc{
+          odom.SetPositionCmd({0, 0, 0}),
+          drive_sys.DriveForwardCmd(48),
+        };
+        enableDrive = false;
+        cc.run();
+        enableDrive = true;
     });
 }

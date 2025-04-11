@@ -3,7 +3,6 @@
 #include "vdb/builtins.hpp"
 #include "vdb/protocol.hpp"
 #include "vdb/registry.hpp"
-#include "vdb/tests.hpp"
 #include "wrapper_device.hpp"
 
 #include "core.h"
@@ -152,7 +151,6 @@ OdometryTank odom(left_drive_motors, right_drive_motors, robot_cfg, &imu);
 OdometryBase *base = &odom;
 
 TankDrive drive_sys(left_drive_motors, right_drive_motors, robot_cfg, &odom);
-ManualTuner turnpid_tuner(turn_pid, drive_sys);
 
 // A global instance of vex::brain used for printing to the V5 brain screen
 void print_multiline(const std::string &str, int y, int x);

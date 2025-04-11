@@ -1,6 +1,5 @@
 #pragma once
 #include "../core/include/subsystems/odometry/odometry_serial.h"
-#include "../core/include/utils/controls/pid_tuners.h"
 #include "TempSubSystems/TempSubSystems.h"
 #include "core.h"
 #include "vex.h"
@@ -69,7 +68,6 @@ extern const controller::button &ColorSortToggle;
 // ================ SUBSYSTEMS ================
 extern ClamperSys clamper_sys;
 extern IntakeSys intake_sys;
-extern ManualTuner turnpid_tuner;
 
 extern PID drive_pid;
 extern PID turn_pid;
