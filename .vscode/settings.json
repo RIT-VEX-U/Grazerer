@@ -57,6 +57,7 @@
 		"ratio": "cpp",
 		"stdexcept": "cpp",
 		"cinttypes": "cpp",
-		"typeinfo": "cpp"
+		"typeinfo": "cpp",
+		"random": "cpp"
 	}
 }
