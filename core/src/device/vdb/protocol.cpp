@@ -1,4 +1,4 @@
-#include "vdb/protocol.hpp"
+#include "../core/include/device/vdb/protocol.hpp"
 
 #include <cstdint>
 #include <cstring>
@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 
-#include "vdb/types.hpp"
+#include "../core/include/device/vdb/types.hpp"
 
 namespace VDP {
 /**

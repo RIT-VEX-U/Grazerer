@@ -1,5 +1,5 @@
 #pragma once
-#include "vdb/crc32.hpp"
+#include "../core/include/device/vdb/crc32.hpp"
 #include <array>
 #include <cstdio>
 #include <cstring>
@@ -43,7 +43,7 @@ class Part;
 // Shared Part Pointer to delete an object that has no pointer pointing to it
 //
 using PartPtr = std::shared_ptr<Part>;
-// Packet of bits stored in a vector of 8 bit unsigned integers
+// Packet of bytes stored in a vector of 8 bit unsigned integers
 using Packet = std::vector<uint8_t>;
 
 // defines a channel id as an 8bit unsigned integer
