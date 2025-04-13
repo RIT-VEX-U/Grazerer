@@ -1,5 +1,5 @@
 #pragma once
-#include "vdb/protocol.hpp"
+#include "../core/include/device/vdb/protocol.hpp"
 
 namespace VDP {
 /**

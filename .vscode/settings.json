@@ -58,6 +58,7 @@
 		"stdexcept": "cpp",
 		"cinttypes": "cpp",
 		"typeinfo": "cpp",
-		"random": "cpp"
+		"random": "cpp",
+		"alignedvector3": "cpp"
 	}
 }

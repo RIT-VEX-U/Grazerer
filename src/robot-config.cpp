@@ -1,9 +1,5 @@
+#pragma once
 #include "robot-config.h"
-#include "../core/include/subsystems/fun/video.h"
-#include "vdb/builtins.hpp"
-#include "vdb/protocol.hpp"
-#include "vdb/registry.hpp"
-#include "wrapper_device.hpp"
 
 #include "core.h"
 #include "inttypes.h"
@@ -155,7 +151,7 @@ TankDrive drive_sys(left_drive_motors, right_drive_motors, robot_cfg, &odom);
 // A global instance of vex::brain used for printing to the V5 brain screen
 void print_multiline(const std::string &str, int y, int x);
 
-VDB::Device dev1{vex::PORT1, 115200 * 2};
+VDB::Device dev1{vex::PORT13, 115200 * 2};
 // VDB::Device dev2{vex::PORT10, 115200 * 8};
 VDP::Registry reg1{&dev1, VDP::Registry::Side::Controller};
 // VDP::Registry reg2{&dev2, VDP::Registry::Side::Listener};

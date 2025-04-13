@@ -1,7 +1,9 @@
 #pragma once
+#include "../core/include/subsystems/fun/video.h"
 #include "../core/include/subsystems/odometry/odometry_serial.h"
 #include "TempSubSystems/TempSubSystems.h"
 #include "core.h"
+#include "robot-config.h"
 #include "vex.h"
 
 #define WALLSTAKE_POT_OFFSET

@@ -1,5 +1,14 @@
 #pragma once
 
+// Device package
+#include "../core/include/device/cobs_device.h"
+#include "../core/include/device/vdb/builtins.hpp"
+#include "../core/include/device/vdb/crc32.hpp"
+#include "../core/include/device/vdb/protocol.hpp"
+#include "../core/include/device/vdb/registry.hpp"
+#include "../core/include/device/vdb/types.hpp"
+#include "../core/include/device/wrapper_device.hpp"
+
 // Subsystems package
 #include "../core/include/subsystems/custom_encoder.h"
 #include "../core/include/subsystems/flywheel.h"

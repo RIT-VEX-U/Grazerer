@@ -1,7 +1,7 @@
-#include "vdb/builtins.hpp"
+#include "../core/include/device/vdb/builtins.hpp"
 
-#include "vdb/protocol.hpp"
-#include "vdb/types.hpp"
+#include "../core/include/device/vdb/protocol.hpp"
+#include "../core/include/device/vdb/types.hpp"
 
 #include "vex_motor.h"
 #include "vex_units.h"
@@ -18,14 +18,7 @@ namespace VDP {
  * @param data the data to put into the record
  */
 Timestamped::Timestamped(std::string name, Part *data)
-    : Record(name), timestamp(new Float(
-                      "timestamp",
-                      []() {
-                          printf("vex time: %f\n", (float)vexSystemTimeGet() / 1000);
-                          return (float)vexSystemTimeGet() / 1000;
-                      }
-                    )),
-      data(data) {
+    : Record(name), timestamp(new Float("timestamp", []() { return (float)vexSystemTimeGet() / 1000; })), data(data) {
     Record::setFields({timestamp, (PartPtr)data});
 }
 /**
