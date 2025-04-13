@@ -41,7 +41,7 @@ SRC_H += $(wildcard core/include/*/*/*/*.h)
 
 # Vendor include directories
 INC += -Ivendor/eigen
-
+INC += -Icore/include
 
 # additional dependancies
 SRC_A  = makefile

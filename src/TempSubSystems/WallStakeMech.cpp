@@ -1,8 +1,9 @@
 #include "core.h"
 #include "vex.h"
 
-#include "../core/include/utils/controls/pid.h"
 #include "TempSubSystems/WallStakeMech.h"
+#include "core/utils/controls/pid.h"
+
 
 WallStakeMech::WallStakeMech(
   const vex::motor_group &motors, const vex::rotation &rotation, const Rotation2d &tolerance,

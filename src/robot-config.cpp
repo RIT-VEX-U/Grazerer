@@ -193,11 +193,15 @@ void robot_init() {
     wall_rot.setReversed(true);
 
     printf("opening channel\n");
-    auto motor1Data =
-      (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("motor", new VDP::Motor("motor", left_back_bottom));
-    auto turnPIDData =
-      (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("turnpid", new VDP::PIDRecord("turnpid", turn_pid));
-    auto odomData = (std::shared_ptr<VDP::Timestamped>)new VDP::Timestamped("odom", new VDP::Odometry("odom", odom));
+    auto motor1Data = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
+      "motor", new VDP::MotorDataRecord("motor", left_back_bottom)
+    );
+    auto turnPIDData = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
+      "turnpid", new VDP::PIDDataRecord("turnpid", turn_pid)
+    );
+    auto odomData = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
+      "odom", new VDP::OdometryDataRecord("odom", odom)
+    );
 
     VDP::ChannelID chan1 = reg1.open_channel(motor1Data);
     VDP::ChannelID chan2 = reg1.open_channel(turnPIDData);

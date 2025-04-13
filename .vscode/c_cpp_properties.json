@@ -11,6 +11,7 @@
 			"${vex_sdkPath}/include/**",
 			"${workspaceFolder}/include/**",
 			"${workspaceFolder}/src/**",
+			"${workspaceFolder}/core/include/**",
 			"${workspaceFolder}/vendor/**"
 		]
 	},
