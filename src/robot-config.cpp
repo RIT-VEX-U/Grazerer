@@ -153,7 +153,7 @@ void print_multiline(const std::string &str, int y, int x);
 
 VDB::Device dev1{vex::PORT13, 115200 * 2};
 // VDB::Device dev2{vex::PORT10, 115200 * 8};
-VDP::Registry reg1{&dev1, VDP::Registry::Side::Controller};
+VDP::RegistryController reg1{&dev1};
 // VDP::Registry reg2{&dev2, VDP::Registry::Side::Listener};
 
 // ================ UTILS ================
