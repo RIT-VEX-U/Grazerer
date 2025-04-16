@@ -1,4 +1,3 @@
-#pragma once
 #include "robot-config.h"
 
 #include "core.h"
@@ -13,7 +12,7 @@ vex::controller con;
 vex::inertial imu(vex::PORT10, vex::turnType::right);
 // ================ OUTPUTS ================
 // Motors
-vex::motor left_back_bottom(vex::PORT4, vex::gearSetting::ratio6_1, true);
+vex::motor left_back_bottom(vex::PORT12, vex::gearSetting::ratio6_1, true);
 vex::motor left_center_bottom(vex::PORT9, vex::gearSetting::ratio6_1, true);
 vex::motor left_front_top(vex::PORT20, vex::gearSetting::ratio6_1, true);
 vex::motor left_back_top(vex::PORT19, vex::gearSetting::ratio6_1, true);
@@ -30,9 +29,9 @@ vex::motor intake_motor(vex::PORT16, vex::gearSetting::ratio6_1, false);
 
 vex::optical color_sensor(vex::PORT5);
 
-vex::motor wallstake_left(vex::PORT2, vex::gearSetting::ratio18_1, false);
-vex::motor wallstake_right(vex::PORT3, vex::gearSetting::ratio18_1, true);
-vex::motor_group wallstake_motors({wallstake_left, wallstake_right});
+// vex::motor wallstake_left(vex::PORT2, vex::gearSetting::ratio18_1, false);
+// vex::motor wallstake_right(vex::PORT3, vex::gearSetting::ratio18_1, true);
+// vex::motor_group wallstake_motors({wallstake_left, wallstake_right});
 
 Rotation2d initial(from_degrees(210));
 Rotation2d tolerance(from_degrees(1));
@@ -43,7 +42,7 @@ PID::pid_config_t wallstake_pid_config{.p = 0.3, .d = 0.005, .error_method = PID
 PID wallstake_pid(wallstake_pid_config);
 
 vex::distance goal_sensor(vex::PORT6);
-WallStakeMech wallstakemech_sys(wallstake_motors, wall_rot, tolerance, initial, offset, wallstake_pid);
+// WallStakeMech wallstakemech_sys(wallstake_motors, wall_rot, tolerance, initial, offset, wallstake_pid);
 
 // pnematices
 vex::digital_out mcglight_board(Brain.ThreeWirePort.C);
@@ -151,9 +150,11 @@ TankDrive drive_sys(left_drive_motors, right_drive_motors, robot_cfg, &odom);
 // A global instance of vex::brain used for printing to the V5 brain screen
 void print_multiline(const std::string &str, int y, int x);
 
-VDB::Device dev1{vex::PORT13, 115200 * 2};
+VDB::Device dev1{vex::PORT1, 115200 * 2};
+VDB::Device dev2{vex::PORT3, 115200 * 2};
 // VDB::Device dev2{vex::PORT10, 115200 * 8};
-VDP::RegistryController reg1{&dev1};
+VDP::RegistryController MonkeyDo{&dev1};
+VDP::RegistryListener MonkeySee{&dev2};
 // VDP::Registry reg2{&dev2, VDP::Registry::Side::Listener};
 
 // ================ UTILS ================
@@ -203,12 +204,12 @@ void robot_init() {
       "odom", new VDP::OdometryDataRecord("odom", odom)
     );
 
-    VDP::ChannelID chan1 = reg1.open_channel(motor1Data);
-    VDP::ChannelID chan2 = reg1.open_channel(turnPIDData);
-    VDP::ChannelID chan3 = reg1.open_channel(odomData);
+    VDP::ChannelID chan1 = MonkeyDo.open_channel(motor1Data);
+    VDP::ChannelID chan2 = MonkeyDo.open_channel(turnPIDData);
+    VDP::ChannelID chan3 = MonkeyDo.open_channel(odomData);
     // VDP::ChannelID chan2 = reg1.open_channel(distData);
 
-    bool ready = reg1.negotiate();
+    bool ready = MonkeyDo.negotiate();
 
     if (!ready) {
         Brain.Screen.printAt(20, 20, "FAILED");
@@ -221,10 +222,11 @@ void robot_init() {
         motor1Data->fetch();
         turnPIDData->fetch();
         odomData->fetch();
+        turnPIDData->response();
         // distData->fetch();
-        reg1.send_data(chan1, motor1Data);
-        reg1.send_data(chan2, turnPIDData);
-        reg1.send_data(chan3, odomData);
+        MonkeyDo.send_data(chan1, motor1Data);
+        MonkeyDo.send_data(chan2, turnPIDData);
+        MonkeyDo.send_data(chan3, odomData);
         // reg1.send_data(chan2, distData);
         vexDelay(100);
         // pose_t pose = base->get_position();

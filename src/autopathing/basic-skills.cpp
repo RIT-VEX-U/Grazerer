@@ -28,7 +28,7 @@ void skills_basic() {
 
 
     //   new DelayCommand(5000),
-      wallstakemech_sys.SetSetPointCmd(from_degrees(200)),
+    //   wallstakemech_sys.SetSetPointCmd(from_degrees(200)),
 	  intake_sys.IntakeCmd(),
 
       // First Ring
@@ -47,7 +47,7 @@ void skills_basic() {
       drive_sys.DriveToPointCmd({71, 120}, vex::fwd, 0.7)->withTimeout(1.8),
       intake_sys.ConveyorInCmd(12.0),
       new DelayCommand(400),
-      wallstakemech_sys.SetSetPointCmd(from_degrees(170)),
+    //   wallstakemech_sys.SetSetPointCmd(from_degrees(170)),
 
       drive_sys.TurnToPointCmd(70, 144, vex::fwd, 0.75)->withTimeout(2),
       drive_sys.DriveToPointCmd({70, 136}, vex::fwd, 0.3)->withTimeout(1),
@@ -55,12 +55,12 @@ void skills_basic() {
       drive_sys.DriveForwardCmd(8, vex::fwd, 0.5)->withTimeout(0.8),
 
       get_into_wallstake(),        
-      wallstakemech_sys.SetSetPointCmd(from_degrees(45)),
+    //   wallstakemech_sys.SetSetPointCmd(from_degrees(45)),
       new DelayCommand(600),
       drive_sys.DriveForwardCmd(2, vex::fwd, 0.9)->withTimeout(1.2),
 
       drive_sys.DriveToPointCmd({72, 120}, vex::reverse, 0.4)->withTimeout(1.2),
-      wallstakemech_sys.SetSetPointCmd(from_degrees(200)),
+    //   wallstakemech_sys.SetSetPointCmd(from_degrees(200)),
       intake_sys.ConveyorInCmd(),
 
       // corner of tile

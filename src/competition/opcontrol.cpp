@@ -17,10 +17,10 @@ void opcontrol() {
     // autonomous();
     // return;
     testing();
-    wallstakemech_sys.hold = false;
+    // wallstakemech_sys.hold = false;
     // intake_sys.conveyor_stop();
     intake_sys.setLight(false);
-    wallstakemech_sys.set_setpoint(from_degrees(210));
+    // wallstakemech_sys.set_setpoint(from_degrees(210));
 
     ColorSortToggle.pressed([]() { intake_sys.set_color_sort_bool(!intake_sys.get_color_sort_bool()); });
 
@@ -45,19 +45,20 @@ void opcontrol() {
         intake_sys.conveyor_stop();
     });
 
-    wallstake_toggler.pressed([]() {
-        wallstakemech_sys.hold = true;
-        if (wallstakemech_sys.get_angle().degrees() > 180 || wallstake_motors.velocity(vex::velocityUnits::dps) > 5) {
-            wallstakemech_sys.set_setpoint(from_degrees(170));
-        } else if (wallstakemech_sys.get_angle().degrees() < 180) {
-            wallstakemech_sys.set_setpoint(from_degrees(50));
-        }
-    });
+    // wallstake_toggler.pressed([]() {
+    //     wallstakemech_sys.hold = true;
+    //     if (wallstakemech_sys.get_angle().degrees() > 180 || wallstake_motors.velocity(vex::velocityUnits::dps) > 5)
+    //     {
+    //         wallstakemech_sys.set_setpoint(from_degrees(170));
+    //     } else if (wallstakemech_sys.get_angle().degrees() < 180) {
+    //         wallstakemech_sys.set_setpoint(from_degrees(50));
+    //     }
+    // });
 
-    wallstake_stow.pressed([]() {
-        wallstakemech_sys.hold = true;
-        wallstakemech_sys.set_setpoint(from_degrees(200));
-    });
+    // wallstake_stow.pressed([]() {
+    //     // wallstakemech_sys.hold = true;
+    //     wallstakemech_sys.set_setpoint(from_degrees(200));
+    // });
 
     // ================ INIT ================
 
