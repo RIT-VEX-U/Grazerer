@@ -16,7 +16,18 @@ void opcontrol() {
     bool is_end = false;
     timer game_timer;
 
-    // maze_auto();
+    while (imu.isCalibrating()){
+        vexDelay(100);
+    }
+
+    maze_auto();
+
+    CommandController cc {
+        drive_sys.DriveForwardCmd(48, vex::forward, .5),
+        // drive_sys.TurnDegreesCmd(90, .5)
+    };
+
+    // cc.run();
 
     // ================ INIT ================
 
@@ -42,17 +53,17 @@ void opcontrol() {
         con.Screen.setCursor(1, 0);
         con.Screen.print("Penalties: %d", MazeGame::num_penalties + MazeGame::num_smups);
 
-        if(pos.x() > 48 && pos.x() < 96 && pos.y() > 72)
-        {
-            int score = game_timer.time(sec) + (MazeGame::num_penalties * 5) + (MazeGame::num_smups * 45);
-            con.Screen.clearScreen();
-            con.Screen.setCursor(1, 0);
-            con.Screen.print("Penalties: %d", MazeGame::num_penalties + MazeGame::num_smups);
-            con.Screen.setCursor(2, 0);
-            con.Screen.print("Final Time: %d", score);
-            drive_sys.stop();
-            return;
-        }
+        // if(pos.x() > 48 && pos.x() < 96 && pos.y() > 72)
+        // {
+        //     int score = game_timer.time(sec) + (MazeGame::num_penalties * 5) + (MazeGame::num_smups * 45);
+        //     con.Screen.clearScreen();
+        //     con.Screen.setCursor(1, 0);
+        //     con.Screen.print("Penalties: %d", MazeGame::num_penalties + MazeGame::num_smups);
+        //     con.Screen.setCursor(2, 0);
+        //     con.Screen.print("Final Time: %d", score);
+        //     drive_sys.stop();
+        //     return;
+        // }
         vexDelay(10);
     }
 

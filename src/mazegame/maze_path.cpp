@@ -41,33 +41,33 @@ void maze_auto() {
         
         */
 
-        drive_sys.DriveForwardCmd(24, vex::forward, .5),
-        drive_sys.TurnToHeadingCmd(90),
-        drive_sys.DriveForwardCmd(72),
-        drive_sys.TurnToHeadingCmd(180),
-        drive_sys.DriveForwardCmd(48),
-        drive_sys.TurnToHeadingCmd(270),
-        drive_sys.DriveForwardCmd(24),
-        drive_sys.TurnToHeadingCmd(0),
+        drive_sys.DriveForwardCmd(24, vex::forward, 1) -> withTimeout(2),
+        drive_sys.TurnToHeadingCmd(-90, 1) ->withTimeout(1),
+        drive_sys.DriveForwardCmd(72, vex::forward, 1) -> withTimeout(4),
+        drive_sys.TurnToHeadingCmd(180, 1) ->withTimeout(1),
+        drive_sys.DriveForwardCmd(48, vex::forward, 1) -> withTimeout(3),
+        drive_sys.TurnToHeadingCmd(-270, 1) ->withTimeout(1),
+        drive_sys.DriveForwardCmd(24, vex::forward, 1) -> withTimeout(2),
+        drive_sys.TurnToHeadingCmd(0, 1) ->withTimeout(1),
 
-        drive_sys.DriveForwardCmd(24),
-        drive_sys.TurnToHeadingCmd(270),
-        drive_sys.DriveForwardCmd(24),
-        drive_sys.TurnToHeadingCmd(180),
-        drive_sys.DriveForwardCmd(72),
-        drive_sys.TurnToHeadingCmd(90),
-        drive_sys.DriveForwardCmd(24),
-        drive_sys.TurnToHeadingCmd(0),
+        drive_sys.DriveForwardCmd(24, vex::forward, 1) -> withTimeout(2),
+        drive_sys.TurnToHeadingCmd(-270, 1) ->withTimeout(1),
+        drive_sys.DriveForwardCmd(24, vex::forward, 1) -> withTimeout(2),
+        drive_sys.TurnToHeadingCmd(180, 1) ->withTimeout(1),
+        drive_sys.DriveForwardCmd(72, vex::forward, 1) -> withTimeout(4),
+        drive_sys.TurnToHeadingCmd(-90, 1) ->withTimeout(1),
+        drive_sys.DriveForwardCmd(24, vex::forward, 1) -> withTimeout(2),
+        drive_sys.TurnToHeadingCmd(0, 1) ->withTimeout(1),
 
-        drive_sys.DriveForwardCmd(24),
-        drive_sys.TurnToHeadingCmd(90),
-        drive_sys.DriveForwardCmd(24),
-        drive_sys.TurnToHeadingCmd(180),
-        drive_sys.DriveForwardCmd(48),
-        drive_sys.TurnToHeadingCmd(270),
-        drive_sys.DriveForwardCmd(72),
-        drive_sys.TurnToHeadingCmd(0),
-        drive_sys.DriveForwardCmd(60)
+        drive_sys.DriveForwardCmd(24, vex::forward, 1) -> withTimeout(2),
+        drive_sys.TurnToHeadingCmd(-90, 1) ->withTimeout(1),
+        drive_sys.DriveForwardCmd(24, vex::forward, 1) -> withTimeout(2),
+        drive_sys.TurnToHeadingCmd(180, 1) ->withTimeout(1),
+        drive_sys.DriveForwardCmd(48, vex::forward, 1) -> withTimeout(3),
+        drive_sys.TurnToHeadingCmd(-270, 1) ->withTimeout(1),
+        drive_sys.DriveForwardCmd(68, vex::forward, 1) -> withTimeout(4),
+        drive_sys.TurnToHeadingCmd(0, 1) ->withTimeout(1),
+        drive_sys.DriveForwardCmd(60, vex::forward, 1) -> withTimeout(4)
     };
     
     cc.run();
