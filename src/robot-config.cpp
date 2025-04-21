@@ -12,7 +12,7 @@ vex::controller con;
 vex::inertial imu(vex::PORT10, vex::turnType::right);
 // ================ OUTPUTS ================
 // Motors
-vex::motor left_back_bottom(vex::PORT12, vex::gearSetting::ratio6_1, true);
+vex::motor left_back_bottom(vex::PORT4, vex::gearSetting::ratio6_1, true);
 vex::motor left_center_bottom(vex::PORT9, vex::gearSetting::ratio6_1, true);
 vex::motor left_front_top(vex::PORT20, vex::gearSetting::ratio6_1, true);
 vex::motor left_back_top(vex::PORT19, vex::gearSetting::ratio6_1, true);
@@ -154,7 +154,7 @@ VDB::Device dev1{vex::PORT1, 115200 * 2};
 VDB::Device dev2{vex::PORT3, 115200 * 2};
 // VDB::Device dev2{vex::PORT10, 115200 * 8};
 VDP::RegistryController MonkeyDo{&dev1};
-VDP::RegistryListener MonkeySee{&dev2};
+VDP::RegistryListener<vex::mutex> MonkeySee{&dev2};
 // VDP::Registry reg2{&dev2, VDP::Registry::Side::Listener};
 
 // ================ UTILS ================
@@ -193,7 +193,7 @@ void robot_init() {
     // wallstake_mech.set_voltage(5);
     wall_rot.setReversed(true);
 
-    printf("opening channel\n");
+    printf("opening channels\n");
     auto motor1Data = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
       "motor", new VDP::MotorDataRecord("motor", left_back_bottom)
     );
@@ -205,7 +205,13 @@ void robot_init() {
     );
 
     VDP::ChannelID chan1 = MonkeyDo.open_channel(motor1Data);
-    VDP::ChannelID chan2 = MonkeyDo.open_channel(turnPIDData);
+    VDP::ChannelID chan2 = MonkeyDo.open_channel(motor1Data);
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("channel 1 id %d, channel 2 id %d\n", chan1, chan2);
     VDP::ChannelID chan3 = MonkeyDo.open_channel(odomData);
     // VDP::ChannelID chan2 = reg1.open_channel(distData);
 
@@ -217,15 +223,20 @@ void robot_init() {
             vexDelay(1000);
         };
     }
-
     while (true) {
         motor1Data->fetch();
-        turnPIDData->fetch();
         odomData->fetch();
         turnPIDData->response();
-        // distData->fetch();
+        // 7a f0 40 01 01 01 01 01 01 01 09 4e ff b3 43 ed d4 34 86
+        // send: 02 80 05 e1 7a f0 40 01 01 01 01 01 01 02 80 01 03 0c 42 01 01 01 01 01 01 01 05 ff f8 d5 18 00
+        // send: 07 80 01 e1 7a f0 40 01 01 01 01 01 01 02 80 01 03 0c 42 01 01 01 01 01 01 01 05 f1 68 5e bd 00
+        // send: 07 80 02 e1 7a f0 40 01 01 01 01 01 01 01 09 4e ff b3 43 ed d4 34 86 00
+        // WARN: Checksums do not match: expected: 897cc9cf, got: 8634d4ed
+        //  distData->fetch();
+        //  char *str = "12345";
+        //  dev1.send_cobs_packet_blocking((uint8_t *)str, 5, false);
         MonkeyDo.send_data(chan1, motor1Data);
-        MonkeyDo.send_data(chan2, turnPIDData);
+        MonkeyDo.send_data(chan2, motor1Data);
         MonkeyDo.send_data(chan3, odomData);
         // reg1.send_data(chan2, distData);
         vexDelay(100);
@@ -239,6 +250,6 @@ void robot_init() {
         // wallstake_mech.set_setpoint(from_degrees(0));
         // vexDelay(5000);
         // wallstake_mech.set_setpoint(from_degrees(180));
-        vexDelay(100);
+        // vexDelay(100);
     }
 }

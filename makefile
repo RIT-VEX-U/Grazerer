@@ -34,10 +34,15 @@ SRC_H  = $(wildcard include/*.h)
 SRC_H  = $(wildcard include/*/*.h)
 
 # Core repo header files
-SRC_H += $(wildcard core/include/*.h)
-SRC_H += $(wildcard core/include/*/*.h)
-SRC_H += $(wildcard core/include/*/*/*.h)
-SRC_H += $(wildcard core/include/*/*/*/*.h)
+SRC_H += $(wildcard core/include/core/*.h)
+SRC_H += $(wildcard core/include/core/*/*.h)
+SRC_H += $(wildcard core/include/core/*/*/*.h)
+SRC_H += $(wildcard core/include/core/*/*/*/*.h)
+
+SRC_H += $(wildcard core/include/core/*.hpp)
+SRC_H += $(wildcard core/include/core/*/*.hpp)
+SRC_H += $(wildcard core/include/core/*/*/*.hpp)
+SRC_H += $(wildcard core/include/core/*/*/*/*.hpp)
 
 # Vendor include directories
 INC += -Ivendor/eigen
