@@ -1,23 +1,18 @@
 #pragma once
-#include "vex.h"
-#include "core.h"
-#include "../core/include/subsystems/odometry/odometry_serial.h"
 #include "TempSubSystems/TempSubSystems.h"
+#include "core.h"
+#include "core/subsystems/odometry/odometry_serial.h"
+#include "vex.h"
 
-
-#define WALLSTAKE_POT_OFFSET 
+#define WALLSTAKE_POT_OFFSET
 
 extern vex::brain brain;
 extern vex::controller con;
-
 
 // ================ INPUTS ================
 // Digital sensors
 
 // Analog sensors
-extern CustomEncoder Left_enc;
-extern CustomEncoder right_enc;
-extern CustomEncoder front_enc;
 
 // ================ OUTPUTS ================
 // Motors
@@ -56,7 +51,7 @@ extern vex::inertial imu;
 extern vex::distance goal_sensor;
 
 extern vex::pot wall_pot;
-//Button Definitions
+// Button Definitions
 extern const controller::button &goal_grabber;
 extern const controller::button &conveyor_button;
 extern const controller::button &conveyor_button_rev;
@@ -67,7 +62,6 @@ extern const controller::button &wallstake_alliancestake;
 
 extern const controller::button &ColorSortToggle;
 
-
 // ================ SUBSYSTEMS ================
 extern ClamperSys clamper_sys;
 extern IntakeSys intake_sys;
@@ -77,17 +71,17 @@ extern MotionController::m_profile_cfg_t drive_motioncontroller_cfg;
 extern MotionController drive_motioncontroller;
 
 extern PID::pid_config_t correction_pid_cfg;
-extern OdometrySerial odom;
-extern OdometryTank tankodom;
+// extern OdometrySerial odom;
+extern OdometryTank odom;
 
 extern robot_specs_t robot_cfg;
 extern TankDrive drive_sys;
 
 // ================ UTILS ================
-enum MatchPaths{
-	BLUE_SAFE_AUTO,
-	RED_SAFE_AUTO,
-	BASIC_SKILLS,
+enum MatchPaths {
+    BLUE_SAFE_AUTO,
+    RED_SAFE_AUTO,
+    BASIC_SKILLS,
 };
 extern MatchPaths matchpath;
 extern bool blue_alliance();

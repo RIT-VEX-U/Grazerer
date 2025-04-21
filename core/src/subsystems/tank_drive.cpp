@@ -379,8 +379,6 @@ bool TankDrive::drive_to_point(
     // Create a point (and vector) to get the direction
     Translation2d pos_diff_pt = {x - current_pos.x(), y - current_pos.y()};
 
-    Translation2d the_point(pos_diff_pt);
-
     // Get the distance between 2 points
     double dist_left = current_pos.translation().distance(end_pos.translation());
 
@@ -416,7 +414,8 @@ bool TankDrive::drive_to_point(
 
     // Get the heading difference between where we are and where we want to be
     // Optimize that heading so we don't turn clockwise all the time
-    double heading = the_point.theta().wrapped_degrees_360();
+    double heading = pos_diff_pt.theta().wrapped_degrees_360();
+    printf("Heading: %f\n", heading);
     double delta_heading = 0;
 
     // Going backwards "flips" the robot's current heading

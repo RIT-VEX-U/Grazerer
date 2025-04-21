@@ -14,7 +14,7 @@ void opcontrol() {
     // vexDelay(1000);
     // autonomous();
     // return;
-    // testing();
+    testing();
     wallstakemech_sys.hold = false;
     // intake_sys.conveyor_stop();
     intake_sys.setLight(false);
@@ -73,7 +73,7 @@ void opcontrol() {
         double left = (double)con.Axis3.position() / 100;
         double right = (double)con.Axis2.position() / 100;
 
-        drive_sys.drive_tank(left, right, 1, TankDrive::BrakeType::None);
+        // drive_sys.drive_tank(left, right, 1, TankDrive::BrakeType::None);
 
         vexDelay(20);
     }
@@ -108,14 +108,18 @@ void testing() {
           new Async(new FunctionCommand([]() {
               while (true) {
                   printf(
-                    "ODO X: %f ODO Y: %f, ODO ROT: %f TURNPID ERROR: %f\n", odom.get_position().x(),
-                    odom.get_position().y(), odom.get_position().rotation().degrees(), turn_pid.get_error()
+                    "ODO X: %f ODO Y: %f, ODO ROT: %f DRIVE PID ERROR: %f\n", odom.get_position().x(),
+                    odom.get_position().y(), odom.get_position().rotation().degrees(), drive_pid.get_error()
                   );
                   vexDelay(100);
               }
               return true;
           })),
-          drive_sys.TurnDegreesCmd(15, 1),
+          odom.SetPositionCmd({0, 0, 0}),
+          drive_sys.DriveToPointCmd(24, 0)->withTimeout(2),
+          drive_sys.TurnToPointCmd(24, -24)->withTimeout(1),
+          drive_sys.DriveToPointCmd(24, -24)->withTimeout(4),
+          drive_sys.TurnToHeadingCmd(180, 1)->withTimeout(1),
           // drive_sys.TurnDegreesCmd(30, 1)->withTimeout(3),
           // drive_sys.TurnDegreesCmd(45, 1)->withTimeout(3),
           // drive_sys.TurnDegreesCmd(90, 1)->withTimeout(3),

@@ -1,5 +1,5 @@
 #include "robot-config.h"
-#include "../core/include/subsystems/fun/video.h"
+#include "core/subsystems/fun/video.h"
 
 #include "core.h"
 #include "inttypes.h"
@@ -10,6 +10,8 @@ vex::controller con;
 
 // ================ INPUTS ================
 // Digital sensors
+
+vex::inertial imu(vex::PORT10);
 
 // ================ OUTPUTS ================
 // Motors
@@ -62,9 +64,9 @@ const vex::controller::button &ColorSortToggle = con.ButtonLeft;
 
 // ================ SUBSYSTEMS ================
 PID::pid_config_t drive_pid_cfg{
-  .p = 0.08,
-  .i = 0.002,
-  .d = 0.008,
+  .p = 0.1,
+  .i = 0.0,
+  .d = 0.0,
   .deadband = 0.5,
   .on_target_time = 0.1,
 };
@@ -72,12 +74,12 @@ PID::pid_config_t drive_pid_cfg{
 PID drive_pid{drive_pid_cfg};
 
 PID::pid_config_t turn_pid_cfg{
-  .p = 0.04,
-  .i = 0.0042,
-  .d = 0.004,
-  .deadband = 2,
+  .p = 0.05,
+  .i = 0.0,
+  .d = 0.003,
+  .deadband = 0.5,
   .on_target_time = 0.1,
-  .error_method = PID::ERROR_TYPE::ANGULAR,
+  .error_method = PID::ERROR_TYPE::LINEAR,
 
 };
 
@@ -87,7 +89,7 @@ PID::pid_config_t turn_pid_cfg_bigI{
   .d = 0.0036,
   .deadband = 2,
   .on_target_time = 0.1,
-  .error_method = PID::ERROR_TYPE::ANGULAR,
+  .error_method = PID::ERROR_TYPE::LINEAR,
 
 };
 
@@ -140,8 +142,8 @@ Pose2d auto_start_red{16.25, 88.75, from_degrees(180)};
 Pose2d auto_start_blue{127.75, 88.75, from_degrees(0)};
 Pose2d zero{0, 0, from_degrees(0)};
 
-OdometrySerial odom(true, true, skills_start, Pose2d{-3.83, 0.2647, from_degrees(270)}, vex::PORT1, 115200);
-
+// OdometrySerial odom(true, true, skills_start, Pose2d{-3.83, 0.2647, from_degrees(270)}, vex::PORT1, 115200);
+OdometryTank odom(left_drive_motors, right_drive_motors, robot_cfg, &imu);
 OdometryBase *base = &odom;
 
 TankDrive drive_sys(left_drive_motors, right_drive_motors, robot_cfg, &odom);
@@ -158,18 +160,18 @@ void robot_init() {
     // matchpath = MatchPaths::RED_SAFE_AUTO;
     //  odom.send_config(auto_start_red, pose_t{-3.83, 0.2647, 270}, false);
     vexDelay(1000);
-    if (matchpath == MatchPaths::RED_SAFE_AUTO) {
-        printf("RED\n");
-        odom.send_config(auto_start_red, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
-    } else if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
-        printf("BLUE\n");
-        odom.send_config(auto_start_blue, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
-    } else if (matchpath == MatchPaths::BASIC_SKILLS) {
-        printf("SKILLS\n");
-        odom.send_config(skills_start, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
-    } else {
-        printf("ERROR: NO PATH GIVEN\n");
-    }
+    // if (matchpath == MatchPaths::RED_SAFE_AUTO) {
+    //     printf("RED\n");
+    //     odom.send_config(auto_start_red, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+    // } else if (matchpath == MatchPaths::BLUE_SAFE_AUTO) {
+    //     printf("BLUE\n");
+    //     odom.send_config(auto_start_blue, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+    // } else if (matchpath == MatchPaths::BASIC_SKILLS) {
+    //     printf("SKILLS\n");
+    //     odom.send_config(skills_start, Pose2d{-3.83, 0.2647, from_degrees(270)}, false);
+    // } else {
+    //     printf("ERROR: NO PATH GIVEN\n");
+    // }
     printf("started!\n");
     // printf("%d, %d\n", competition::bStopTasksBetweenModes, competition::bStopAllTasksBetweenModes);
     // competition::bStopTasksBetweenModes = true;
@@ -181,7 +183,7 @@ void robot_init() {
     // wallstake_mech.set_voltage(5);
     wall_rot.setReversed(true);
 
-    while (true) {
+    while (imu.isCalibrating()) {
         // pose_t pose = base->get_position();
         // pose_t posetank = tankodom.get_position();
         // printf("%" PRIu64 ", %f, %f, %f\n", vexSystemHighResTimeGet(), pose.x, pose.y, pose.rot);
