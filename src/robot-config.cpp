@@ -14,16 +14,16 @@ vex::controller con;
 // ================ OUTPUTS ================
 // Motors
 vex::motor left_back_bottom(vex::PORT4, vex::gearSetting::ratio6_1, true);
-vex::motor left_center_bottom(vex::PORT9, vex::gearSetting::ratio6_1, true);
+// vex::motor left_center_bottom(vex::PORT9, vex::gearSetting::ratio6_1, true);
 vex::motor left_front_top(vex::PORT20, vex::gearSetting::ratio6_1, true);
 vex::motor left_back_top(vex::PORT19, vex::gearSetting::ratio6_1, true);
-vex::motor_group left_drive_motors({left_back_bottom, left_center_bottom, left_back_top, left_front_top});
+vex::motor_group left_drive_motors({left_back_bottom, left_back_top, left_front_top});
 
-vex::motor right_back_bottom(vex::PORT8, vex::gearSetting::ratio6_1, false);
+vex::motor right_back_bottom(vex::PORT6, vex::gearSetting::ratio6_1, false);
 vex::motor right_center_bottom(vex::PORT7, vex::gearSetting::ratio6_1, false);
 vex::motor right_front_top(vex::PORT18, vex::gearSetting::ratio6_1, false);
-vex::motor right_back_top(vex::PORT17, vex::gearSetting::ratio6_1, false);
-vex::motor_group right_drive_motors({right_back_bottom, right_center_bottom, right_back_top, right_front_top});
+// vex::motor right_back_top(vex::PORT17, vex::gearSetting::ratio6_1, false);
+vex::motor_group right_drive_motors({right_back_bottom, right_center_bottom,  right_front_top});
 
 vex::motor conveyor(vex::PORT15, vex::gearSetting::ratio6_1, true);
 vex::motor intake_motor(vex::PORT16, vex::gearSetting::ratio6_1, false);
@@ -60,7 +60,7 @@ const vex::controller::button &wallstake_alliancestake = con.ButtonDown;
 
 const vex::controller::button &ColorSortToggle = con.ButtonLeft;
 
-vex::inertial imu {vex::PORT10};
+vex::inertial imu {vex::PORT9};
 
 // ================ SUBSYSTEMS ================
 PID::pid_config_t drive_pid_cfg{

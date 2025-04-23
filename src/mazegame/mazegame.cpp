@@ -56,7 +56,7 @@ bool MazeGame::is_single_penalty()
 }
 
 bool MazeGame::is_super_mega_ultra_penalty()
-{
+{ 
   static bool was_prev_penalty = false;
 
   Pose2d pos = odom.get_position();

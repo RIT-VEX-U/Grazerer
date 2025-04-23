@@ -20,7 +20,7 @@ void opcontrol() {
         vexDelay(100);
     }
 
-    maze_auto();
+    // maze_auto();
 
     CommandController cc {
         drive_sys.DriveForwardCmd(48, vex::forward, .5),
