@@ -12,7 +12,7 @@ vex::controller con;
 vex::inertial imu(vex::PORT10, vex::turnType::right);
 // ================ OUTPUTS ================
 // Motors
-vex::motor left_back_bottom(vex::PORT4, vex::gearSetting::ratio6_1, true);
+vex::motor left_back_bottom(vex::PORT2, vex::gearSetting::ratio6_1, true);
 vex::motor left_center_bottom(vex::PORT9, vex::gearSetting::ratio6_1, true);
 vex::motor left_front_top(vex::PORT20, vex::gearSetting::ratio6_1, true);
 vex::motor left_back_top(vex::PORT19, vex::gearSetting::ratio6_1, true);
@@ -150,11 +150,11 @@ TankDrive drive_sys(left_drive_motors, right_drive_motors, robot_cfg, &odom);
 // A global instance of vex::brain used for printing to the V5 brain screen
 void print_multiline(const std::string &str, int y, int x);
 
-VDB::Device dev1{vex::PORT1, 115200 * 2};
-VDB::Device dev2{vex::PORT3, 115200 * 2};
+VDB::Device dev1{vex::PORT2, 115200 * 2};
+// VDB::Device dev2{vex::PORT3, 115200 * 2};
 // VDB::Device dev2{vex::PORT10, 115200 * 8};
-VDP::RegistryController MonkeyDo{&dev1};
-VDP::RegistryListener<vex::mutex> MonkeySee{&dev2};
+VDP::RegistryController regcon1{&dev1};
+// VDP::RegistryListener<vex::mutex> MonkeySee{&dev2};
 // VDP::Registry reg2{&dev2, VDP::Registry::Side::Listener};
 
 // ================ UTILS ================
@@ -194,28 +194,28 @@ void robot_init() {
     wall_rot.setReversed(true);
 
     printf("opening channels\n");
-    auto motor1Data = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
-      "motor", new VDP::MotorDataRecord("motor", left_back_bottom)
+    auto test_data = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
+      "test_record", new VDP::TestRecord("test_record", 2.34)
     );
-    auto turnPIDData = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
-      "turnpid", new VDP::PIDDataRecord("turnpid", turn_pid)
-    );
-    auto odomData = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
-      "odom", new VDP::OdometryDataRecord("odom", odom)
-    );
+    // auto turnPIDData = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
+    //   "turnpid", new VDP::PIDDataRecord("turnpid", turn_pid)
+    // );
+    // auto odomData = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
+    //   "odom", new VDP::OdometryDataRecord("odom", odom)
+    // );
 
-    VDP::ChannelID chan1 = MonkeyDo.open_channel(motor1Data);
-    VDP::ChannelID chan2 = MonkeyDo.open_channel(motor1Data);
+    VDP::ChannelID chan1 = regcon1.open_channel(test_data);
+    // VDP::ChannelID chan2 = MonkeyDo.open_channel(motor1Data);
     printf("\n");
     printf("\n");
     printf("\n");
     printf("\n");
     printf("\n");
-    printf("channel 1 id %d, channel 2 id %d\n", chan1, chan2);
-    VDP::ChannelID chan3 = MonkeyDo.open_channel(odomData);
+    printf("channel 1 id %d\n", chan1);
+    // VDP::ChannelID chan3 = MonkeyDo.open_channel(odomData);
     // VDP::ChannelID chan2 = reg1.open_channel(distData);
 
-    bool ready = MonkeyDo.negotiate();
+    bool ready = regcon1.negotiate();
 
     if (!ready) {
         Brain.Screen.printAt(20, 20, "FAILED");
@@ -224,9 +224,11 @@ void robot_init() {
         };
     }
     while (true) {
-        motor1Data->fetch();
-        odomData->fetch();
-        turnPIDData->response();
+        test_data->fetch();
+        regcon1.send_data(chan1, test_data);
+        test_data->response();
+        // odomData->fetch();
+        // turnPIDData->response();
         // 7a f0 40 01 01 01 01 01 01 01 09 4e ff b3 43 ed d4 34 86
         // send: 02 80 05 e1 7a f0 40 01 01 01 01 01 01 02 80 01 03 0c 42 01 01 01 01 01 01 01 05 ff f8 d5 18 00
         // send: 07 80 01 e1 7a f0 40 01 01 01 01 01 01 02 80 01 03 0c 42 01 01 01 01 01 01 01 05 f1 68 5e bd 00
@@ -235,9 +237,9 @@ void robot_init() {
         //  distData->fetch();
         //  char *str = "12345";
         //  dev1.send_cobs_packet_blocking((uint8_t *)str, 5, false);
-        MonkeyDo.send_data(chan1, motor1Data);
-        MonkeyDo.send_data(chan2, motor1Data);
-        MonkeyDo.send_data(chan3, odomData);
+        
+        // MonkeyDo.send_data(chan2, motor1Data);
+        // MonkeyDo.send_data(chan3, odomData);
         // reg1.send_data(chan2, distData);
         vexDelay(100);
         // pose_t pose = base->get_position();
