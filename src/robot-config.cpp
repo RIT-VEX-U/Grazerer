@@ -12,7 +12,7 @@ vex::controller con;
 vex::inertial imu(vex::PORT10, vex::turnType::right);
 // ================ OUTPUTS ================
 // Motors
-vex::motor left_back_bottom(vex::PORT2, vex::gearSetting::ratio6_1, true);
+vex::motor left_back_bottom(vex::PORT9, vex::gearSetting::ratio6_1, true);
 vex::motor left_center_bottom(vex::PORT9, vex::gearSetting::ratio6_1, true);
 vex::motor left_front_top(vex::PORT20, vex::gearSetting::ratio6_1, true);
 vex::motor left_back_top(vex::PORT19, vex::gearSetting::ratio6_1, true);

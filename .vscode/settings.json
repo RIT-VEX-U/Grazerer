@@ -60,5 +60,6 @@
 		"typeinfo": "cpp",
 		"random": "cpp",
 		"alignedvector3": "cpp"
-	}
+	},
+	"idf.portWin": "COM3"
 }
