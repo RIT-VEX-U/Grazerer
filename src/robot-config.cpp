@@ -194,7 +194,7 @@ void robot_init() {
     wall_rot.setReversed(true);
 
     printf("opening channels\n");
-    auto test_data = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
+    VDP::PartPtr test_data = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
       "test_record", new VDP::TestRecord("test_record", 2.34)
     );
     // auto turnPIDData = (std::shared_ptr<VDP::TimestampedRecord>)new VDP::TimestampedRecord(
@@ -227,31 +227,11 @@ void robot_init() {
         test_data->fetch();
         regcon1.send_data(chan1, test_data);
         test_data->response();
-        // odomData->fetch();
-        // turnPIDData->response();
-        // 7a f0 40 01 01 01 01 01 01 01 09 4e ff b3 43 ed d4 34 86
-        // send: 02 80 05 e1 7a f0 40 01 01 01 01 01 01 02 80 01 03 0c 42 01 01 01 01 01 01 01 05 ff f8 d5 18 00
-        // send: 07 80 01 e1 7a f0 40 01 01 01 01 01 01 02 80 01 03 0c 42 01 01 01 01 01 01 01 05 f1 68 5e bd 00
-        // send: 07 80 02 e1 7a f0 40 01 01 01 01 01 01 01 09 4e ff b3 43 ed d4 34 86 00
-        // WARN: Checksums do not match: expected: 897cc9cf, got: 8634d4ed
-        //  distData->fetch();
-        //  char *str = "12345";
-        //  dev1.send_cobs_packet_blocking((uint8_t *)str, 5, false);
-        
-        // MonkeyDo.send_data(chan2, motor1Data);
-        // MonkeyDo.send_data(chan3, odomData);
-        // reg1.send_data(chan2, distData);
+        printf("original record data: \n%s\n", test_data->pretty_print_data().c_str());
+        if(regcon1.part_to_update() != NULL){
+          printf("updating part\n");
+          test_data = regcon1.part_to_update();
+        }
         vexDelay(100);
-        // pose_t pose = base->get_position();
-        // pose_t posetank = tankodom.get_position();
-        // printf("%" PRIu64 ", %f, %f, %f\n", vexSystemHighResTimeGet(), pose.x, pose.y, pose.rot);
-        // printf("%" PRIu64 ", %f, %f, %f\n", vexSystemHighResTimeGet(), pose.x, pose.y, pose.rot);
-        // wallstakemech_sys.hold = false;
-        // printf("%f\n", color_sensor.hue());
-        // printf("Wallstake Angle: %f\n", wallstakemech_sys.get_angle().degrees());
-        // wallstake_mech.set_setpoint(from_degrees(0));
-        // vexDelay(5000);
-        // wallstake_mech.set_setpoint(from_degrees(180));
-        // vexDelay(100);
     }
 }
