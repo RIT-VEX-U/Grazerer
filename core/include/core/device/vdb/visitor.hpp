@@ -1,7 +1,7 @@
 #pragma once
-#include "core/device/vdb/protocol.hpp"
-#include "core/device/vdb/types.hpp"
+#include "core/device/vdb/essential.hpp"
 
+#include "vex.h"
 class ResponsePacketVisitor : public VDP::Visitor {
 public:
   ResponsePacketVisitor(VDP::PartPtr from_part);

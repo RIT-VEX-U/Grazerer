@@ -1,6 +1,5 @@
 #include "core/device/vdb/registry-controller.hpp"
 #include "core/device/cobs_device.h"
-#include "core/device/vdb/protocol.hpp"
 
 namespace VDP {
 
@@ -103,7 +102,7 @@ ChannelID RegistryController::open_channel(PartPtr &for_data) {
  * @param id The id of the channel to hold the data
  * @param data the Part Pointer for the channel to hold and send to the device
  */
-bool RegistryController::send_data(ChannelID id, PartPtr &data) {
+bool RegistryController::send_data(ChannelID id) {
     if (timer.time() > rec_switch_time) {
         rec_mode = !rec_mode;
         timer.reset();
@@ -121,11 +120,8 @@ bool RegistryController::send_data(ChannelID id, PartPtr &data) {
         printf("VDB-Controller: Channel with ID %d doesn't exist yet\n", (int)id);
         return false;
     }
-    // sets the channel's data to the Part Pointer given
-    Channel &chan = channels[id];
-    chan.data = data;
     // checks if the channel has been acknowledged yet
-    if (!chan.acked) {
+    if (!channels[id].acked) {
         printf("VDB-Controller: Channel %d has not yet been negotiated. Dropping packet\n", (int)id);
         return false;
     }
@@ -133,15 +129,12 @@ bool RegistryController::send_data(ChannelID id, PartPtr &data) {
     VDP::Packet scratch;
     PacketWriter writ{scratch};
 
-    writ.write_data_message(chan);
+    writ.write_data_message(channels[id]);
     VDP::Packet pac = writ.get_packet();
 
     return device->send_packet(pac);
 }
 
-PartPtr RegistryController::part_to_update(){
-    return this->record_to_update;
-}
 /**
  * sends channel schematics to the Registry device and checks for ackowledgements
  * @return whether or not all channel's were acknowledgements

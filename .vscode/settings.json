@@ -59,7 +59,12 @@
 		"cinttypes": "cpp",
 		"typeinfo": "cpp",
 		"random": "cpp",
-		"alignedvector3": "cpp"
+		"alignedvector3": "cpp",
+		"fft": "cpp",
+		"nonlinearoptimization": "cpp",
+		"openglsupport": "cpp",
+		"memory": "cpp",
+		"dense": "cpp"
 	},
 	"idf.portWin": "COM3"
 }

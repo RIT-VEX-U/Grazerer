@@ -1,9 +1,93 @@
 #pragma once
-#include "core/device/vdb/protocol.hpp"
+#include "core/device/vdb/essential.hpp"
 #include <string>
+#include <memory>
+#include <functional>
 namespace VDP {
+
+
+class Visitor;
 /**
- * Defines a Part that contains another Part
+ * defines a Part, which has a name and contains data
+ * essentially defines data formatted so that it can be sent to the debug board
+ */
+class Part {
+    friend class PacketReader;
+    friend class PacketWriter;
+    friend class Record;
+
+  public:
+    /**
+     * Creates a Part with a name
+     * a part is essentially data formatted so that it can be sent to the debug board
+     * @param name name for the Part
+     */
+    Part(std::string name);
+    /*
+     * Deleter for the Part, used to delete the data once it is no longer needed
+     * i.e after it has been sent to the debug board
+     */
+    virtual ~Part();
+    /**
+     *  @return a string of the Part with the format "name: string"
+     */
+    std::string pretty_print() const;
+    /**
+     * @return a string of the Part's data with the format "name: value"
+     */
+    std::string pretty_print_data() const;
+    /*
+     * sets the data the part contains, meant to be overrided
+     */
+    virtual void fetch() = 0;
+
+    virtual void response();
+
+    virtual VDP::PartPtr clone() = 0;
+    /**
+     * sets the data the part contains to the data from a packet, meant to be overrided
+     * @param reader the PacketReader to read data from
+     */
+    virtual void read_data_from_message(PacketReader &reader) = 0;
+
+    std::string get_name() const;
+
+    virtual void Visit(Visitor *) = 0;
+
+  protected:
+    // These are needed to decode correctly but you shouldn't call them directly
+    /**
+     * writes the Part schematic to a packet so that it can be sent to the debug board, meant to be overrided
+     * @param sofar the packet writer to write with
+     */
+    virtual void write_schema(PacketWriter &sofar) const = 0;
+    /**
+     * writes the value of the Part to a packet so that it can be sent to the debug board
+     * @param sofar the packet writer to write with
+     */
+    virtual void write_message(PacketWriter &sofar) const = 0;
+    /**
+     * changes a stringstream to a specified format, meant to be overrided
+     * @param ss the stream of strings to change
+     * @param indent the amount of double spaced indents to add to the string
+     */
+    virtual void pprint(std::stringstream &ss, size_t indent) const = 0;
+    /**
+     * changes a stringstream to the contain the Part's data in a specified format, meant to be overrided
+     * @param ss the stream of strings to change
+     * @param indent the amount of double spaced indents to add to the string
+     */
+    virtual void pprint_data(std::stringstream &ss, size_t indent) const = 0;
+
+    std::string name;
+};
+
+// Shared Part Pointer used to automatically delete an object that has no pointer pointing to it
+using PartPtr = std::shared_ptr<Part>;
+
+
+/**
+ * Defines a Part that contains other Parts
  * essentially an array of parts that is formatted so that it can be sent to the debug board
  */
 class Record : public Part {

@@ -1,8 +1,9 @@
 #pragma once
-#include "core/device/vdb/protocol.hpp"
+#include "core/device/vdb/abstract-device.hpp"
+#include "core/device/vdb/essential.hpp"
+
 #include "vex.h"
 #include <functional>
-#include "core/device/vdb/visitor.hpp"
 
 namespace VDP {
 class RegistryController {
@@ -39,9 +40,8 @@ class RegistryController {
      * @param id The id of the channel to hold the data
      * @param data the Part Pointer for the channel to hold and send to the device
      */
-    bool send_data(ChannelID id, PartPtr &data);
+    bool send_data(ChannelID id);
 
-    PartPtr part_to_update();
     /**
      * sends channel schematics to the Registry device and checks for ackowledgements
      * @return whether or not all channel's were acknowledgements
@@ -66,7 +66,6 @@ class RegistryController {
     // Our channels (us -> them)
     std::vector<Channel> channels;
     ChannelID next_channel_id = 0;
-    PartPtr record_to_update;
 
     CallbackFn on_broadcast = [&](VDP::Channel chan) {
         std::string schema_str = chan.data->pretty_print();
@@ -83,9 +82,8 @@ class RegistryController {
         printf("data currently at channel: %s\n", to_update.data->pretty_print_data().c_str());
         printf("data we have to put into channel: %s", new_data.data->pretty_print_data().c_str());
         to_update.data->Visit(&RV);
-        Channel &pingas = channels[new_data.getID()];
-        pingas.data = to_update.data;
-        record_to_update = to_update.data;
+        Channel orignal_channel = channels[new_data.getID()];
+        *orignal_channel.data = *to_update.data;
         printf("final data at channel: %s\n", channels[new_data.getID()].data->pretty_print_data().c_str());
         // printf(
         //   "VDB Controller: No Data Callback installed: Received data for channel "

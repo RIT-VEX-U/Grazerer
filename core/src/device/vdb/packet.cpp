@@ -1,21 +1,7 @@
-#include "core/device/vdb/protocol.hpp"
-#include "core/device/vdb/types.hpp"
+#include "core/device/vdb/packet.hpp"
 
-#include <cstdint>
-#include <cstring>
-#include <functional>
-#include <sstream>
-#include <stdio.h>
-#include <string>
-#include <utility>
-#include <vector>
+namespace VDP{
 
-
-namespace VDP {
-/**
- * @return the channel's id
- */
-ChannelID Channel::getID() const { return id; }
 /*
  * prints out the packet in individual bytes
  */
@@ -37,97 +23,7 @@ void dump_packet_8bit(const Packet &pac) {
     }
   printf("\n");
 }
-/**
- * @param t the VDP type to return a string of
- * @return a string of the VDP type
- */
-std::string to_string(Type t) {
-    switch (t) {
-    case Type::Record:
-        return "record";
-    case Type::String:
-        return "string";
-
-    case Type::Float:
-        return "float";
-    case Type::Double:
-        return "double";
-
-    case Type::Uint8:
-        return "uint8";
-    case Type::Uint16:
-        return "uint16";
-    case Type::Uint32:
-        return "uint32";
-    case Type::Uint64:
-        return "uint64";
-
-    case Type::Int8:
-        return "int8";
-    case Type::Int16:
-        return "int16";
-    case Type::Int32:
-        return "int32";
-    case Type::Int64:
-        return "int64";
-    }
-
-    return "<<UNKNOWN TYPE>>";
-}
-/**
- * adds indents to a stringstream
- * @param ss the stringstream to add indents to
- * @param indent the amount of double spaced indents to add
- */
-void add_indents(std::stringstream &ss, size_t indent) {
-    for (size_t i = 0; i < indent; i++) {
-        ss << "  ";
-    }
-}
-/**
- * Creates a Part with a name
- * a part is essentially data formatted so that it can be sent to the debug board
- * @param name name for the Part
- */
-Part::Part(std::string name) : name(std::move(name)) {}
-
-/*
- * Deleter for the Part, used to delete the data once it is no longer needed
- * i.e after it has been sent to the debug board
- */
-Part::~Part() {}
-
-std::string Part::get_name() const { return name; }
-
-void Part::response() {}
-/**
- *  @return a stringstream of the Part with the format "name: string"
- */
-std::string Part::pretty_print() const {
-    std::stringstream ss;
-    this->pprint(ss, 0);
-
-    return ss.str();
-}
-/**
- * @return a stringstream of the Part's data with the format "name: value"
- */
-std::string Part::pretty_print_data() const {
-    std::stringstream ss;
-    this->pprint_data(ss, 0);
-    return ss.str();
-}
-/**
- * Defines a PacketReader to read a packet
- * @param pac the packet to read
- */
-PacketReader::PacketReader(Packet pac) : pac(std::move(pac)), read_head(0) {}
-/**
- * Defines a PacketReader to read a packet with a set start location for the packet
- * @param pac the packet to read
- * @param start the start location for the reader to start reading from
- */
-PacketReader::PacketReader(Packet pac, size_t start) : pac(std::move(pac)), read_head(start) {}
+    
 /**
  * checks a packets validility
  * @param packet the packet to check the validity of
@@ -158,6 +54,36 @@ VDP::PacketValidity validate_packet(const VDP::Packet &packet) {
     // if no problems with the packet are found, packet is Ok
     return VDP::PacketValidity::Ok;
 }
+
+
+
+static constexpr auto PACKET_TYPE_BIT_MASK = 0b10000000;
+static constexpr auto PACKET_FUNCTION_BIT_MASK = 0b01100000;
+
+uint8_t make_header_byte(PacketHeader head) {
+  return (uint8_t)head.type | (uint8_t)head.func;
+}
+
+PacketHeader decode_header_byte(uint8_t hb) {
+  const PacketType pt = (PacketType)(hb & PACKET_TYPE_BIT_MASK);
+  const PacketFunction func =
+      (PacketFunction)(hb & PACKET_FUNCTION_BIT_MASK);
+
+  return {pt, func};
+}
+    
+/**
+ * Defines a PacketReader to read a packet
+ * @param pac the packet to read
+ */
+PacketReader::PacketReader(Packet pac) : pac(std::move(pac)), read_head(0) {}
+/**
+ * Defines a PacketReader to read a packet with a set start location for the packet
+ * @param pac the packet to read
+ * @param start the start location for the reader to start reading from
+ */
+PacketReader::PacketReader(Packet pac, size_t start) : pac(std::move(pac)), read_head(start) {}
+
 /**
  * @return the current byte the reader is on
  */
@@ -187,6 +113,49 @@ std::string PacketReader::get_string() {
         s.push_back((char)c);
     }
     return s;
+}
+
+/**
+ * creates a decoder to decode a packet
+ * @return the Part Pointer for the data from the packet
+ */
+PartPtr PacketReader::make_decoder() {
+    /**
+     * gets the type and name of the packet and contstructs a Part pointer from it
+     */
+    const Type t = this->get_type();
+    const std::string name = this->get_string();
+
+    switch (t) {
+    case Type::String:
+        return PartPtr(new String(name));
+    case Type::Record:
+        return PartPtr(new Record(name, *this));
+
+    case Type::Float:
+        return PartPtr(new Float(name));
+    case Type::Double:
+        return PartPtr(new Double(name));
+
+    case Type::Uint8:
+        return PartPtr(new Uint8(name));
+    case Type::Uint16:
+        return PartPtr(new Uint16(name));
+    case Type::Uint32:
+        return PartPtr(new Uint32(name));
+    case Type::Uint64:
+        return PartPtr(new Uint64(name));
+
+    case Type::Int8:
+        return PartPtr(new Int8(name));
+    case Type::Int16:
+        return PartPtr(new Int16(name));
+    case Type::Int32:
+        return PartPtr(new Int32(name));
+    case Type::Int64:
+        return PartPtr(new Int64(name));
+    }
+    return nullptr;
 }
 
 /**
@@ -326,67 +295,6 @@ void PacketWriter::write_response(std::deque<Channel> &response_queue) {
 }
 
 /**
- *  deleter for the device, used to delete it when it is no longer needed
- */
-AbstractDevice::~AbstractDevice() {}
-/**
- * creates a decoder to decode a packet
- * @param pac the packet reader to make a decoder from
- * @return the Part Pointer for the data from the packet
- */
-PartPtr make_decoder(PacketReader &pac) {
-    /**
-     * gets the type and name of the packet and contstructs a Part pointer from it
-     */
-    const Type t = pac.get_type();
-    const std::string name = pac.get_string();
-
-    switch (t) {
-    case Type::String:
-        return PartPtr(new String(name));
-    case Type::Record:
-        return PartPtr(new Record(name, pac));
-
-    case Type::Float:
-        return PartPtr(new Float(name));
-    case Type::Double:
-        return PartPtr(new Double(name));
-
-    case Type::Uint8:
-        return PartPtr(new Uint8(name));
-    case Type::Uint16:
-        return PartPtr(new Uint16(name));
-    case Type::Uint32:
-        return PartPtr(new Uint32(name));
-    case Type::Uint64:
-        return PartPtr(new Uint64(name));
-
-    case Type::Int8:
-        return PartPtr(new Int8(name));
-    case Type::Int16:
-        return PartPtr(new Int16(name));
-    case Type::Int32:
-        return PartPtr(new Int32(name));
-    case Type::Int64:
-        return PartPtr(new Int64(name));
-    }
-    return nullptr;
-}
-static constexpr auto PACKET_TYPE_BIT_MASK = 0b10000000;
-static constexpr auto PACKET_FUNCTION_BIT_MASK = 0b01100000;
-
-uint8_t make_header_byte(PacketHeader head) {
-  return (uint8_t)head.type | (uint8_t)head.func;
-}
-
-PacketHeader decode_header_byte(uint8_t hb) {
-  const PacketType pt = (PacketType)(hb & PACKET_TYPE_BIT_MASK);
-  const PacketFunction func =
-      (PacketFunction)(hb & PACKET_FUNCTION_BIT_MASK);
-
-  return {pt, func};
-}
-/**
  * Decodes the broadcast in a packet
  * @param packet the packet to decode
  * @return the pair of the Channel ID and the Part Pointer of the packet schematic
@@ -399,9 +307,9 @@ std::pair<ChannelID, PartPtr> decode_broadcast(const Packet &packet) {
     // checks the channel id from the packet
     const ChannelID id = reader.get_number<ChannelID>();
     // constructs the schematic for the packet from the byte as a Part Pointer
-    const PartPtr schema = make_decoder(reader);
+    const PartPtr schema = reader.make_decoder();
     // returns the pair of the channel id and the packet shematic
     return {id, schema};
 }
 
-} // namespace VDP
+}

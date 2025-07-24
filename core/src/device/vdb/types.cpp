@@ -1,5 +1,41 @@
 #include "core/device/vdb/types.hpp"
+
 namespace VDP {
+
+/**
+ * Creates a Part with a name
+ * a part is essentially data formatted so that it can be sent to the debug board
+ * @param name name for the Part
+ */
+Part::Part(std::string name) : name(std::move(name)) {}
+
+/*
+ * Deleter for the Part, used to delete the data once it is no longer needed
+ * i.e after it has been sent to the debug board
+ */
+Part::~Part() {}
+
+std::string Part::get_name() const { return name; }
+
+void Part::response() {}
+/**
+ *  @return a stringstream of the Part with the format "name: string"
+ */
+std::string Part::pretty_print() const {
+    std::stringstream ss;
+    this->pprint(ss, 0);
+
+    return ss.str();
+}
+/**
+ * @return a stringstream of the Part's data with the format "name: value"
+ */
+std::string Part::pretty_print_data() const {
+    std::stringstream ss;
+    this->pprint_data(ss, 0);
+    return ss.str();
+}
+
 /**
  * Creates a Record with just a name
  * a Record is essentially an array of parts that is formatted so that it can be sent to the debug board
@@ -37,7 +73,7 @@ Record::Record(std::string name, PacketReader &reader) : Part(std::move(name)), 
     const uint32_t size = reader.get_number<SizeT>();
     fields.reserve(size);
     for (size_t i = 0; i < size; i++) {
-        fields.push_back(make_decoder(reader));
+        fields.push_back(reader.make_decoder());
     }
 }
 /**

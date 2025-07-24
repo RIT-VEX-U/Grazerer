@@ -4,7 +4,7 @@
 #include "core/device/cobs_device.h"
 #include "core/device/vdb/builtins.hpp"
 #include "core/device/vdb/crc32.hpp"
-#include "core/device/vdb/protocol.hpp"
+#include "core/device/vdb/packet.hpp"
 #include "core/device/vdb/registry-controller.hpp"
 #include "core/device/vdb/registry-listener.hpp"
 #include "core/device/vdb/types.hpp"

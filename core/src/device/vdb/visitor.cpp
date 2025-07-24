@@ -1,5 +1,6 @@
 #include "core/device/vdb/visitor.hpp"
 
+
 ResponsePacketVisitor::ResponsePacketVisitor(VDP::PartPtr from_part) : from_part(from_part){}
 
 void ResponsePacketVisitor::VisitRecord(VDP::Record *record) {

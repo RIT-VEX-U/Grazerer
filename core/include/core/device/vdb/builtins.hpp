@@ -1,11 +1,12 @@
 #pragma once
-#include "core/device/vdb/types.hpp"
+#include "core/device/vdb/essential.hpp"
 #include "core/subsystems/odometry/odometry_base.h"
-#include <Eigen/Dense>
-#include <memory>
 
-#include "vex.h"
+#include <Eigen/Dense>
+
+#include <memory>
 #include <string>
+
 namespace VDP {
 /**
  * Defines a record that holds a timestamp and data

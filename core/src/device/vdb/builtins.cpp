@@ -1,12 +1,8 @@
 #include "core/device/vdb/builtins.hpp"
 
-#include "core/device/vdb/protocol.hpp"
-#include "core/device/vdb/types.hpp"
-
 #include "vex_motor.h"
 #include "vex_units.h"
 #include <cstdint>
-#include <string>
 #include <utility>
 
 namespace VDP {

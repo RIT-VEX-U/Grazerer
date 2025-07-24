@@ -225,13 +225,9 @@ void robot_init() {
     }
     while (true) {
         test_data->fetch();
-        regcon1.send_data(chan1, test_data);
+        regcon1.send_data(chan1);
         test_data->response();
         printf("original record data: \n%s\n", test_data->pretty_print_data().c_str());
-        if(regcon1.part_to_update() != NULL){
-          printf("updating part\n");
-          test_data = regcon1.part_to_update();
-        }
         vexDelay(100);
     }
 }
